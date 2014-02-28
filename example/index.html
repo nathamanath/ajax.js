@@ -1,0 +1,27 @@
+<!doctype html>
+
+<html>
+  <head>
+  </head>
+
+  <body>
+    <h1>Ajax.js Example</h1>
+
+    <p>See my ajax!</p>
+
+    <script src="../ajax.min.js"></script>
+
+    <script>
+      var options = {
+        url: 'http://updates.html5rocks.com',
+        onStart: function(){console.log('Ajax start');},
+        onFinish: function(){console.log('Ajax finish');},
+        onSuccess: function(){console.log('Ajax success yo!');},
+        onError: function(){console.log('Ajax error');},
+        onAbort: function(){console.log('Ajax abort');}
+      }
+
+      Ajax.request(options);
+    </script>
+  </body>
+</html>

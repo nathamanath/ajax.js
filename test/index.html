@@ -1,27 +1,46 @@
 <!doctype html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Mocha Spec Runner</title>
     <link rel="stylesheet" href="bower_components/mocha/mocha.css">
-</head>
-<body>
+  </head>
+
+  <body>
     <div id="mocha"></div>
     <script src="bower_components/mocha/mocha.js"></script>
     <script>mocha.setup('bdd')</script>
     <script src="bower_components/chai/chai.js"></script>
+    <script src="bower_components/sinon-chai/lib/sinon-chai.js"></script>
+    <script src="bower_components/sinonjs/sinon.js"></script>
+
     <script>
-        var assert = chai.assert;
-        var expect = chai.expect;
-        var should = chai.should();
+      var assert = chai.assert;
+      var expect = chai.expect;
+      var should = chai.should();
+
+      // Fix progress event in phantomJS
+      if (navigator.userAgent.indexOf('PhantomJS') !== -1){
+        window.ProgressEvent = function (type, params) {
+          params = params || {};
+
+          this.lengthComputable = params.lengthComputable || false;
+          this.loaded = params.loaded || 0;
+          this.total = params.total || 0;
+        };
+      }
     </script>
 
-    <!-- include source files here... -->
+    <!-- testing amd module definition -->
+    <iframe src="amd.html"></iframe>
 
-    <!-- include spec files here... -->
-    <script src="spec/test.js"></script>
+    <script src="ajax.js"></script>
+    <script src="spec/ajax_spec.js"></script>
 
-    <script>mocha.run()</script>
-</body>
+
+    <script>
+      (window.mochaPhantomJS)? mochaPhantomJS.run() : mocha.run();
+    </script>
+  </body>
 </html>
