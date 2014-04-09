@@ -29,6 +29,11 @@ module.exports = function(grunt){
         files: ['ajax.js', 'test/spec/*.js'],
         tasks: ['jsdoc', "uglify", "jshint"]
       }
+    },
+    exec: {
+      test: {
+        command: 'mocha-phantomjs -R dot test/index.html'
+      }
     }
   });
 
@@ -36,5 +41,9 @@ module.exports = function(grunt){
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-jsdoc');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-exec');
+
+  grunt.registerTask('test', ['exec:test']);
+  grunt.registerTask('dist', ['uglify', 'jsdoc']);
 }
 

@@ -58,8 +58,8 @@
 
   //TODO: Add other common types.
   var CONTENT_TYPES = {
-    'JSON': 'application/json',
-    'URLENCODED': 'application/x-www-form-urlencoded'
+    'URLENCODED': 'application/x-www-form-urlencoded',
+    'JSON': 'application/json'
   },
 
   TYPES = (function(){
@@ -138,7 +138,7 @@
   };
 
   function Ajax(args){
-    this.method = args.method || 'GET';
+    this.method = args.method || METHODS[0];
     this.url = args.url;
     this.data = args.data || {};
     this.token = args.token || token();
@@ -148,7 +148,7 @@
     this.onFinish = args.onFinish || noop;
     this.onTimeout = args.onTimeout || noop;
     this.timeout = args.timeout || 0;
-    this.type = args.type || 'URLENCODED';
+    this.type = args.type || TYPES[0];
 
     if(typeof args.url === 'undefined'){throw new Error('Ajax requires a url.');}
     if(METHODS.indexOf(this.method) === -1){throw new Error('Ajax method must be valid.');}
