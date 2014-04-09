@@ -56,10 +56,30 @@
    * @param {object} xhr - Called on timeout of xhr request.
    */
 
+  //TODO: Add other common types.
   var CONTENT_TYPES = {
     'JSON': 'application/json',
     'URLENCODED': 'application/x-www-form-urlencoded'
   },
+
+  TYPES = (function(){
+    out = [];
+    for(var key in CONTENT_TYPES){
+      out.push(key);
+    }
+
+    return out;
+  })(),
+
+  METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT'],
+
+  token = function(){
+    var el = document.getElementsByName('csrf-token')[0];
+    if(el !== 'undefined' && el != null){return el.content;}
+    return null;
+  },
+
+  noop = function(){},
 
   contentType = function(ajax){
     return CONTENT_TYPES[ajax.type];
@@ -118,15 +138,6 @@
   };
 
   function Ajax(args){
-    var METHODS = ['GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT'],
-        TYPES = ['JSON', 'URLENCODED'], // TODO: add plain text, and form data.
-        token = function(){
-          var el = document.getElementsByName('csrf-token')[0];
-          if(el !== 'undefined' && el != null){return el.content;}
-          return null;
-        },
-        noop = function(){};
-
     this.method = args.method || 'GET';
     this.url = args.url;
     this.data = args.data || {};
@@ -139,9 +150,9 @@
     this.timeout = args.timeout || 0;
     this.type = args.type || 'URLENCODED';
 
-    if(typeof args.url === 'undefined'){throw 'Ajax requires a url.';}
-    if(METHODS.indexOf(this.method) === -1){throw 'Ajax method must be valid.';}
-    if(TYPES.indexOf(this.type) === -1){throw 'Ajax content type must be valid.';}
+    if(typeof args.url === 'undefined'){throw new Error('Ajax requires a url.');}
+    if(METHODS.indexOf(this.method) === -1){throw new Error('Ajax method must be valid.');}
+    if(TYPES.indexOf(this.type) === -1){throw new Error('Ajax content type must be valid.');}
 
     return this;
   }
