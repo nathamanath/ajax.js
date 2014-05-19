@@ -27,7 +27,7 @@ module.exports = function(grunt){
     watch: {
       scripts: {
         files: ['ajax.js', 'test/spec/*.js'],
-        tasks: ['jsdoc', "uglify", "jshint"]
+        tasks: ["uglify", "jshint"]
       }
     },
     exec: {

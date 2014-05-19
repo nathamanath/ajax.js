@@ -65,13 +65,13 @@
         it('defaults to x-www-form-urlencoded', function(){
           Ajax.request({url: ''});
           var headers = this.requests[0].requestHeaders;
-          headers['Content-type'].should.eql('application/x-www-form-urlencoded');
+          headers['Content-Type'].should.eql('application/x-www-form-urlencoded');
         });
 
         it('is json for type JSON', function(){
           Ajax.request({url: '', type: 'JSON'});
           var headers = this.requests[0].requestHeaders;
-          headers['Content-type'].should.eql('application/json');
+          headers['Content-Type'].should.eql('application/json');
         });
       });
 
@@ -100,6 +100,12 @@
         Ajax.request({url: '', token: 'something'});
         var headers = this.requests[0].requestHeaders;
         headers['X-CSRF-Token'].should.eql('something');
+      });
+
+      it('sets request headers if provided', function(){
+        Ajax.request({url: '', headers: [{key: 'cow', value: 'moo'}]});
+        var headers = this.requests[0].requestHeaders;
+        headers.cow.should.eql('moo');
       });
 
       it('dosent send token if not provided', function(){

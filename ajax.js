@@ -29,6 +29,7 @@
    * @param {onTimeout} [args.onTimeout] - Called if request times out.
    * @param {float} [args.timeout] - Set timeout for request in miliseconds.
    * Defaults to no timeout.
+   * @param {array} args.headers - Request headers to be set. [{key: 'Key', value: 'Value'}]
    */
 
   /**
@@ -97,9 +98,11 @@
     }
 
     xhr.timeout = ajax.timeout;
-    xhr.setRequestHeader('Content-type', contentType(ajax));
 
-    if(ajax.token){xhr.setRequestHeader('X-CSRF-Token', ajax.token);}
+    setHeaders(ajax, xhr);
+
+    // xhr.setRequestHeader('Content-type', contentType(ajax));
+
 
     return xhr;
   },
@@ -137,6 +140,14 @@
     }
   };
 
+  setHeaders = function(ajax, xhr){
+    var headers = ajax.headers;
+    for(var i=0; i<headers.length;i++){
+      var header = headers[i];
+      xhr.setRequestHeader(header.key, header.value);
+    }
+  };
+
   function Ajax(args){
     this.method = args.method || METHODS[0];
     this.url = args.url;
@@ -149,10 +160,17 @@
     this.onTimeout = args.onTimeout || noop;
     this.timeout = args.timeout || 0;
     this.type = args.type || TYPES[0];
+    this.headers = args.headers || [];
 
     if(typeof args.url === 'undefined'){throw new Error('Ajax requires a url.');}
     if(METHODS.indexOf(this.method) === -1){throw new Error('Ajax method must be valid.');}
     if(TYPES.indexOf(this.type) === -1){throw new Error('Ajax content type must be valid.');}
+
+    this.headers.push({key: 'Content-Type', value: contentType(this)});
+
+    if(this.token){
+      this.headers.push({key:'X-CSRF-Token', value: this.token});
+    }
 
     return this;
   }
