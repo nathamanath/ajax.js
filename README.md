@@ -33,7 +33,7 @@ html docs are in ./doc... I'll host these soon.
 Tests will run in browser or headless with mocha-phantomjs
 
 ```zsh
-grunt test
+rake test
 ```
 
 ### TODO
