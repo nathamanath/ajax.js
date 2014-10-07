@@ -30,10 +30,11 @@ html docs are in ./doc... I'll host these soon.
 
 ### Testing
 
-Tests will run in browser or headless with mocha-phantomjs
+Tests will run in browser or headless with jasmine
 
 ```zsh
-rake test
+$ bundle install
+$ rake test
 ```
 
 ### TODO
@@ -41,5 +42,4 @@ rake test
 * Cross browser testing especially IE
 * Make it work in IE 8
 * Cache results of feature detection
-* run tests through something that comes as a ruby gem
 

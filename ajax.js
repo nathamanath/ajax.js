@@ -121,11 +121,11 @@
   },
 
   bindEvents = function(ajax, xhr){
-    xhr.addEventListener('timeout', ajax.onTimeout(xhr), false);
+    xhr.ontimeout = ajax.onTimeout(xhr);
 
     ajax.onStart(xhr);
 
-    xhr.addEventListener('readystatechange', function(){
+    xhr.onreadystatechange = function(){
       if(this.readyState === 4){
         if(this.status === 200){
           ajax.onSuccess(this);
@@ -134,7 +134,7 @@
         }
         ajax.onFinish(this);
       }
-    }, false);
+    };
   },
 
   dataToUrlEncoded = function(data){
