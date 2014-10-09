@@ -25,7 +25,7 @@ describe('Ajax', function(){
     it('fires off an XMLHttpRequest', function(){
       var start = jasmine.createSpy('success');
       new Ajax({url: '/bla', onSuccess: start}).send();
-      expect(typeof jasmine.Ajax.requests.mostRecent()).not.toEqual('undefined')
+      expect(typeof jasmine.Ajax.requests.mostRecent()).not.toEqual('undefined');
     });
 
     it('uses selected http method', function(){
