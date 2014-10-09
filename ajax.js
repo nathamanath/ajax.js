@@ -1,12 +1,10 @@
-/*global ActiveXObject*/
-
 /**
  * @fileOverview Ajax class / require js amd module.
  * @author <a href="http://nathansplace.co.uk">NathanG</a>
  * @version 0.0.1
  */
 
-(function(root){
+(function(window){
   /**
    * Ajax.js. This is an atempt at a nice clean light weight, speedy easy to use
    * interface ontop of the javascript XMLHttpRequest object. It is compatible
@@ -70,6 +68,7 @@
     'JSON': 'application/json'
   },
 
+  // ['URLENCODED', 'JSON'...]
   TYPES = (function(){
     var out = [];
     for(var key in CONTENT_TYPES){
@@ -104,27 +103,33 @@
     return CONTENT_TYPES[ajax.type];
   },
 
-  createRequest = function(ajax){
-    var xhr = null;
-
+  xhrClass = (function(){
     if(window.XMLHttpRequest){
-      xhr = new XMLHttpRequest();
+      return ['XMLHttpRequest', null];
     }else if(window.ActiveXObject){ // ie <= 9
+      var klass = 'ActiveXObject',
+          str = '';
+
       try{
-        xhr = new ActiveXObject('Msxml2.XMLHTTP');
+        str = 'Msxml2.XMLHTTP';
+        window[klass](str);
+        return [klass, str];
       }
       catch(e){
         try{
-          xhr = new ActiveXObject('Microsoft.XMLHTTP');
+          str = 'Microsoft.XMLHTTP';
+          window[klass](str);
+          return [klass, str];
         }
-
         catch(a){}
       }
     }
 
-    if(!xhr){
-      throw new Error('Your browser is way too old.');
-    }
+    throw new Error('Your browser is way too old.');
+  })(),
+
+  createRequest = function(ajax){
+    var xhr = new window[xhrClass[0]](xhrClass[1]);
 
     xhr.open(ajax.method, ajax.url, true);
     xhr.timeout = ajax.timeout;
@@ -133,7 +138,6 @@
   },
 
   bindEvents = function(ajax, xhr){
-    // TODO: can this work with ie8?
     xhr.ontimeout = ajax.onTimeout(xhr);
 
     ajax.onStart(xhr);
@@ -285,7 +289,7 @@
   if(typeof define === 'function' && define.amd){
     define('ajax', [], function(){return Ajax;}); // amd
   }else{
-    root.Ajax = Ajax;
+    window.Ajax = Ajax;
   }
 }(this));
 
