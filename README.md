@@ -1,10 +1,9 @@
-# Ajax - Javascript ajax module
+# Ajax.js - Javascript ajax module
 
-So, I use a lot of XMLHttpRequests, but it would be foolish to bring in jQuery
-or similar just for that. So here's my own light as I can make it vanilla js Ajax class.
+Make ajax requests with ease.
 
-Ajax.js has 0 external dependencies, works in all proper browsers as well as IE >= 8,
-and it's require.js /  AMD compatible!
+Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE
+>= 8.
 
 ## Usage
 
