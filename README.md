@@ -2,8 +2,7 @@
 
 Make ajax requests with ease.
 
-Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE
->= 8.
+Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE>=8.
 
 ## Usage
 
