@@ -105,16 +105,31 @@
   },
 
   createRequest = function(ajax){
-    var xhr = new XMLHttpRequest();
+    var xhr = null;
 
-    if('withCredentials' in xhr){
-      xhr.open(ajax.method, ajax.url, true);
-    }else if(typeof XDomainRequest !== 'undefined'){
-      // Cater for old ie.
-      xhr = new XDomainRequest();
-      xhr.open(ajax.method, ajax.url);
+    if(window.XMLHttpRequest){
+      xhr = new XMLHttpRequest();
+    }else if(window.ActiveXObject){ // ie <= 9
+      try{
+        xhr = new ActiveXObject("Msxml2.XMLHTTP");
+      }
+      catch(e){
+        try{
+          xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        catch(e){}
+      }
     }
 
+    if(!xhr){
+      throw new Error('Your browser is way too old.');
+      return false;
+    }
+
+    xhr.open(ajax.method, ajax.url, true);
+
+    // TODO: why is this in here?
     xhr.timeout = ajax.timeout;
 
     return xhr;
