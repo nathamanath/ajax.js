@@ -127,15 +127,13 @@
     }
 
     xhr.open(ajax.method, ajax.url, true);
-
-    // TODO: why is this in here?
     xhr.timeout = ajax.timeout;
 
     return xhr;
   },
 
   bindEvents = function(ajax, xhr){
-    xhr.ontimeout = ajax.onTimeout(xhr);
+    if(xhr.onTimeout){ xhr.ontimeout = ajax.onTimeout(xhr); }
 
     ajax.onStart(xhr);
 
@@ -211,14 +209,23 @@
     }
   },
 
+  inArray = function(arr, value){
+    // ie <= 8 dosent support Array.prototype.indexOf :(
+    for(var i = 0; i < arr.length; i++){
+      if(arr[i] === value){ return true; }
+    }
+    return false;
+  },
+
   validateMethod = function(method){
-    if(METHODS.indexOf(method) === -1){
+
+    if(!inArray(METHODS, method)){
       throw new Error('Ajax method must be valid.');
     }
   },
 
   validateType = function(type){
-    if(TYPES.indexOf(type) === -1){
+    if(!inArray(TYPES, type)){
       throw new Error('Ajax content type must be valid.');
     }
   },
