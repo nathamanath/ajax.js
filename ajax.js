@@ -133,7 +133,8 @@
   },
 
   bindEvents = function(ajax, xhr){
-    if(xhr.onTimeout){ xhr.ontimeout = ajax.onTimeout(xhr); }
+    // TODO: can this work with ie8?
+    xhr.ontimeout = ajax.onTimeout(xhr);
 
     ajax.onStart(xhr);
 
