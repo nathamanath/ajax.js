@@ -13,9 +13,10 @@
 
     <script>
       var options = {
-        url: 'http://192.168.1.106:8000',
+        url: 'http://echo.nathansplace.co.uk/echo',
         method: 'POST',
         type: 'JSON',
+        headers: [{key: 'token', value: 'sdf'}],
         data: {
           body: '{"teapot": true}',
           //status: 418,
