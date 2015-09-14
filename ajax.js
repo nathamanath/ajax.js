@@ -35,20 +35,21 @@
 
 
     /** @returns xhr instance */
-    var xhrFactory = function() {
-      // ie 10+ and browsers
-      if(window.XMLHttpRequest) {
-        return new XMLHttpRequest();
+    var xhrFactory = function(xDomain) {
+      var xhr = new XMLHttpRequest();
+
+      // ie >= 10 and browsers
+      if ("withCredentials" in xhr) {
+        return xhr;
       }
 
-      // ie 9
-      try {
-        return new ActiveXObject('Msxml2.XMLHTTP');
+      // ie9
+      if(xDomain) {
+        return new XDomainRequest();
       }
 
-      catch(e) {}
-
-      throw new Error('Ajax: Browser is old');
+      // ie9 local
+      return new ActiveXObject('Msxml2.XMLHTTP');
     };
 
     var noop = function() {};
@@ -61,7 +62,7 @@
      */
     var Request = function(args) {
       this.args = args;
-      this.xhr = xhrFactory();
+      this.xhr = xhrFactory(args.xDomain);
       this.url = args.url;
       this.method = args.method || 'GET';
       this.type = args.type || TYPES[0];
@@ -100,24 +101,41 @@
         var self = this;
         var xhr = self.xhr;
 
-        xhr.onTimeout = self.onTimeout;
+        xhr.ontimeout = self.onTimeout;
 
-        xhr.onreadystatechange = function(){
-          var request = this;
+        // TODO: this is a bit nasty
+        if(this._xDomainRequest()) {
+          xhr.onload = self.onSuccess;
+          xhr.onerror = self.onError;
+        } else {
 
-          if(request.readyState === 4) {
-            if(request.status.toString().match(/2[0-9]{1,2}/)) {
-              self.onSuccess(request);
-            } else {
-              self.onError(request);
+          xhr.onreadystatechange = function(){
+            var request = this;
+
+            if(request.readyState === 4) {
+              if(request.status.toString().match(/2[0-9]{1,2}/)) {
+                self.onSuccess(request);
+              } else {
+                self.onError(request);
+              }
+
+              self.onFinish(request);
             }
+          };
+        }
+      },
 
-            self.onFinish(request);
-          }
-        };
+      /** Are we using XdomainRequest */
+      _xDomainRequest: function() {
+        return !!this.xhr.constructor.toString().match('XDomainRequest');
       },
 
       _setRequestHeaders: function() {
+        // no headers for XDomainRequest :(
+        if(this._xDomainRequest()) {
+          return;
+        }
+
         var headers = this.headers;
         var header;
 

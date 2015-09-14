@@ -21,4 +21,8 @@ Ajax.request({
 });
 ```
 
+#### Note
+
+ies `XDomainRequest` does not allow you to set headers.
+
 ## Development
