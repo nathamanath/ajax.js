@@ -39,7 +39,7 @@
       var xhr = new XMLHttpRequest();
 
       // ie >= 10 and browsers
-      if ("withCredentials" in xhr) {
+      if ('withCredentials' in xhr) {
         return xhr;
       }
 
