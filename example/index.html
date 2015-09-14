@@ -16,10 +16,11 @@
         url: 'http://echo.nathansplace.co.uk/echo',
         method: 'POST',
         type: 'JSON',
+        xDomain: true,
         headers: [{key: 'token', value: 'sdf'}],
         data: {
           body: '{"teapot": true}',
-          //status: 418,
+          status: 500,
           headers: {'Content-Type': 'application/json'},
         },
         onStart: function(){console.log('Ajax start');},
