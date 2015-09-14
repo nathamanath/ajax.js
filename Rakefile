@@ -15,7 +15,7 @@ end
 task default: :watch
 
 desc 'Lint, test, docs, and minify'
-task :build => [:test, :lint, :minify, :docs]
+task :build => [:lint, :minify]
 
 task :minify do
   puts 'Minifying...'
@@ -30,47 +30,12 @@ task :minify do
   puts 'Done.'
 end
 
-task :docs do
-  puts 'Compiling jsdocs...'
-  sh "jsdoc -d #{DOCS_DIR} #{SOURCE}"
-  puts 'Done.'
-end
-
-desc 'Run tests'
-task test: :'jasmine:ci'
-
 desc 'Lint js'
 task lint: :jshint
 
 Jshintrb::JshintTask.new :jshint do |t|
-  puts 'Linting...'
-
   t.pattern = SOURCE
-  t.options ={
-    bitwise: true,
-    browser: true,
-    camelcase: true,
-    curly: true,
-    eqeqeq: true,
-    forin: true,
-    indent: 2,
-    immed: true,
-    latedef: true,
-    noarg: true,
-    noempty: true,
-    nonew: true,
-    quotmark: true,
-    regexp: true,
-    undef: true,
-    strict: true,
-    trailing: true,
-    undef: true,
-    unused: true,
-    maxparams: 4,
-    maxdepth: 3,
-    maxstatements: 10,
-    maxlen: 80
-  }
+  t.options = :jshintrc
 end
 
 desc 'Run :build on change'
@@ -96,4 +61,3 @@ task :clean do
 
   puts 'Done.'
 end
-

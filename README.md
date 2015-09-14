@@ -4,6 +4,8 @@ Make ajax requests with ease.
 
 Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE >= 9.
 
+For ie8, see ie8 branch
+
 ## Usage
 
 ```javascript

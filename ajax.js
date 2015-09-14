@@ -38,7 +38,7 @@
     var xhrFactory = function() {
       // ie 10+ and browsers
       if(window.XMLHttpRequest) {
-        return new XMLHttpRequest;
+        return new XMLHttpRequest();
       }
 
       // ie 9
