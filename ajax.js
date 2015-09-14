@@ -1,295 +1,196 @@
-/**
- * @fileOverview Ajax class / require js amd module.
- * @author <a href="http://nathansplace.co.uk">NathanG</a>
- * @version 0.0.1
- */
-
-(function(window){
-  /**
-   * Ajax.js. This is an atempt at a nice clean light weight, speedy easy to use
-   * interface ontop of the javascript XMLHttpRequest object. It is compatible
-   * with require.js, and works as a stand alone vanilla javascript class.
-   *
-   * @class Ajax
-   * @constructor Ajax
-   * @param {string} args.url - request url
-   * @param {string} [args.method] - HTTP request method. Defaults to GET.
-   * Must be valid UPPERCASE http method.
-   * @param {object} [args.data] - json request data
-   * @param {string} [args.type] - request data content type. default is
-   * URLENCODED. available types: JSON (application/json),
-   * or URLENCODED(application/x-www-formurlencoded).
-   * @param {string} [args.token] - CSRF token. If not provided Ajax will look
-   * for a Rails style CSRF token meta tag.
-   * @param {onSuccess} [args.onSuccess] - Called after making a successful
-   * request.
-   * @param {onError} [args.onError] - Called if request throws an error.
-   * @param {onStart} [args.onStart] - Always called before other callbacks, at
-   * start of request.
-   * @param {onFinish} [args.onFinish] - Always called after other callbacks at
-   * the end of the request.
-   * @param {onTimeout} [args.onTimeout] - Called if request times out.
-   * @param {float} [args.timeout] - Set timeout for request in miliseconds.
-   * Defaults to no timeout.
-   * @param {array} args.headers - Request headers to be set.
-   * [{key: 'Key', value: 'Value'}]
-   */
-
-  /**
-   * @callback onSuccess
-   * @param {object} xhr - Called on successful xhr object.
-   */
-
-  /**
-   * @callback onError
-   * @param {object} xhr - Called on unuccessful xhr object.
-   */
-
-  /**
-   * @callback onStart
-   * @param {object} xhr - Called on start of xhr request.
-   */
-
-  /**
-   * @callback onFinish
-   * @param {object} xhr - Called on finish of xhr request.
-   */
-
-  /**
-   * @callback onTimeout
-   * @param {object} xhr - Called on timeout of xhr request.
-   */
-
+(function(window, document) {
   'use strict';
 
-  //TODO: Add other common types.
-  var CONTENT_TYPES = {
-    'URLENCODED': 'application/x-www-form-urlencoded',
-    'JSON': 'application/json'
-  },
+  (function(window, factory) {
+    // Expose Ajax
+    var define = window.define || null;
 
-  // ['URLENCODED', 'JSON'...]
-  TYPES = (function(){
-    var out = [];
-    for(var key in CONTENT_TYPES){
-      if(CONTENT_TYPES.hasOwnProperty(key)){
-        out.push(key);
-      }
+    if(typeof define === 'function' && define.amd){ // AMD
+      define('ajax', [], function() {
+        return factory();
+      });
+    }else{
+      window.Ajax = factory();
     }
+  })(window, function() {
 
-    return out;
-  })(),
+    //TODO: Add other common types.
+    var CONTENT_TYPES = {
+      'URLENCODED': 'application/x-www-form-urlencoded',
+      'JSON': 'application/json'
+    };
 
-  METHODS = [
-    'GET',
-    'POST',
-    'PUT',
-    'HEAD',
-    'DELETE',
-    'OPTIONS',
-    'TRACE',
-    'CONNECT'
-  ],
+    // ['URLENCODED', 'JSON'...]
+    var TYPES = (function(CONTENT_TYPES){
+      var out = [];
 
-  token = function(){
-    var el = document.getElementsByName('csrf-token')[0];
-    if(typeof el !== 'undefined' && el !== null){return el.content;}
-    return null;
-  },
-
-  noop = function(){},
-
-  contentType = function(ajax){
-    return CONTENT_TYPES[ajax.type];
-  },
-
-  xhrClass = (function(){
-    if(window.XMLHttpRequest){
-      return ['XMLHttpRequest', null];
-    }else if(window.ActiveXObject){ // ie <= 9
-      var klass = 'ActiveXObject',
-          str = '';
-
-      try{
-        str = 'Msxml2.XMLHTTP';
-        window[klass](str);
-        return [klass, str];
-      }
-      catch(e){
-        try{
-          str = 'Microsoft.XMLHTTP';
-          window[klass](str);
-          return [klass, str];
+      for(var key in CONTENT_TYPES){
+        if(CONTENT_TYPES.hasOwnProperty(key)){
+          out.push(key);
         }
-        catch(a){}
       }
-    }
 
-    throw new Error('Your browser is way too old.');
-  })(),
+      return out;
+    })(CONTENT_TYPES);
 
-  createRequest = function(ajax){
-    var xhr = new window[xhrClass[0]](xhrClass[1]);
 
-    xhr.open(ajax.method, ajax.url, true);
-    xhr.timeout = ajax.timeout;
+    /** @returns xhr instance */
+    var xhrFactory = function() {
+      // ie 10+ and browsers
+      if(window.XMLHttpRequest) {
+        return new XMLHttpRequest;
+      }
 
-    return xhr;
-  },
+      // ie 9
+      try {
+        return new ActiveXObject('Msxml2.XMLHTTP');
+      }
 
-  bindEvents = function(ajax, xhr){
-    xhr.ontimeout = ajax.onTimeout(xhr);
+      catch(e) {}
 
-    ajax.onStart(xhr);
+      throw new Error('Ajax: Browser is old');
+    };
 
-    xhr.onreadystatechange = function(){
-      if(this.readyState === 4){
-        if(this.status === 200 || this.status === 201){
-          ajax.onSuccess(this);
-        }else{
-          ajax.onError(this);
+    var noop = function() {};
+
+
+    /**
+     * Represents an ajax request
+     *
+     * @class Request
+     */
+    var Request = function(args) {
+      this.args = args;
+      this.xhr = xhrFactory();
+      this.url = args.url;
+      this.method = args.method || 'GET';
+      this.type = args.type || TYPES[0];
+      this.data = args.data || {};
+      this.token = args.token || this._getToken();
+      this.timeout = args.timeout || 0;
+      this.headers = args.headers || [];
+
+      // TODO: Replace with events
+      this.onSuccess = args.onSuccess || noop;
+      this.onError = args.onError || noop;
+      this.onStart = args.onStart || noop;
+      this.onFinish = args.onFinish || noop;
+      this.onTimeout = args.onTimeout || noop;
+    };
+
+    Request.prototype = {
+      init: function() {
+        this._validate();
+        this._defaultHeaders();
+
+        this.xhr.open(this.method, this.url, true);
+        this.xhr.timeout = this.timeout;
+
+        this._setRequestHeaders();
+        this._bindEvents();
+
+        var xhr = this.xhr;
+
+        this.onStart(xhr);
+
+        return this.xhr.send(this._parseData());
+      },
+
+      _bindEvents: function() {
+        var self = this;
+        var xhr = self.xhr;
+
+        xhr.onTimeout = self.onTimeout;
+
+        xhr.onreadystatechange = function(){
+          var request = this;
+
+          if(request.readyState === 4) {
+            if(request.status.toString().match(/2[0-9]{1,2}/)) {
+              self.onSuccess(request);
+            } else {
+              self.onError(request);
+            }
+
+            self.onFinish(request);
+          }
+        };
+      },
+
+      _setRequestHeaders: function() {
+        var headers = this.headers;
+        var header;
+
+        for(var i = 0, l = headers.length; i < l; i++) {
+          header = headers[i];
+
+          this.xhr.setRequestHeader(header.key, header.value);
         }
-        ajax.onFinish(this);
+      },
+
+      _validate: function() {
+        if(TYPES.indexOf(this.type) === -1) {
+          throw new Error('Ajax: Invalid type');
+        }
+
+        if(!this.url) {
+          throw new Error('Ajax: URL required');
+        }
+      },
+
+      _defaultHeaders: function() {
+        var headers = this.headers;
+        var token = this.token;
+
+        headers.push({ key: 'Content-Type', value: this._contentType() });
+
+        if(token) {
+          headers.push({ key:'X-CSRF-Token', value: token });
+        }
+      },
+
+      _contentType: function() {
+        return CONTENT_TYPES[this.type];
+      },
+
+      /** look for CSRF token in meta tag */
+      _getToken: function() {
+        var el = document.getElementsByName('csrf-token')[0];
+
+        if(typeof el !== 'undefined' && el !== null) {
+          return el.content;
+        }
+
+        return null;
+      },
+
+      /** data formatted for request type */
+      _parseData: function() {
+        if(this.type === 'JSON') {
+          return JSON.stringify(this.data);
+        } else {
+          return this._dataToURLEncoded();
+        }
+      },
+
+      /** make url params from this.data object */
+      _dataToURLEncoded: function() {
+        var data = this.data;
+
+        var out = Object.keys(data).map(function(key) {
+          return key + '=' + encodeURIComponent(data[key]);
+        });
+
+        return out.join('&');
       }
     };
-  },
 
-  dataToUrlEncoded = function(data){
-    var out = [];
-
-    for(var key in data){
-      if(data.hasOwnProperty(key)){
-        out.push(key + '=' + encodeURIComponent(data[key]));
+    /** @class Ajax */
+    return {
+      request: function(args) {
+        return new Request(args).init();
       }
-    }
+    };
 
-    return out.join('&');
-  },
-
-  parseData = function(ajax){
-    if(ajax.type === 'JSON'){
-      return JSON.stringify(ajax.data);
-    }else{
-      // x-www-form-urlencoded
-      return dataToUrlEncoded(ajax.data);
-    }
-  },
-
-  setHeaders = function(ajax, xhr){
-    var headers = ajax.headers;
-    for(var i=0; i<headers.length; i++){
-      var header = headers[i];
-      xhr.setRequestHeader(header.key, header.value);
-    }
-  },
-
-  mergeArgs = function(ajax, args){
-    ajax.method = args.method || METHODS[0];
-    ajax.url = args.url;
-    ajax.data = args.data || {};
-    ajax.token = args.token || token();
-    ajax.timeout = args.timeout || 0;
-    ajax.type = args.type || TYPES[0];
-    ajax.headers = args.headers || [];
-  },
-
-  mergeCallbacks = function(ajax, args){
-    var callbacks = [
-      'onSuccess',
-      'onError',
-      'onStart',
-      'onFinish',
-      'onTimeout'
-    ];
-
-    for(var i=0; i < callbacks.length; i++){
-      var callback = callbacks[i];
-      ajax[callback] = args[callback] || noop;
-    }
-  },
-
-  validateUrl = function(url){
-    if(typeof url === 'undefined'){
-      throw new Error('Ajax requires a url.');
-    }
-  },
-
-  inArray = function(arr, value){
-    // ie <= 8 dosent support Array.prototype.indexOf :(
-    for(var i = 0; i < arr.length; i++){
-      if(arr[i] === value){ return true; }
-    }
-    return false;
-  },
-
-  validateMethod = function(method){
-
-    if(!inArray(METHODS, method)){
-      throw new Error('Ajax method must be valid.');
-    }
-  },
-
-  validateType = function(type){
-    if(!inArray(TYPES, type)){
-      throw new Error('Ajax content type must be valid.');
-    }
-  },
-
-  validateAjax = function(ajax){
-    validateUrl(ajax.url);
-    validateMethod(ajax.method);
-    validateType(ajax.type);
-  },
-
-  defaultHeaders = function(ajax){
-    ajax.headers.push({key: 'Content-Type', value: contentType(ajax)});
-
-    if(ajax.token){
-      ajax.headers.push({key:'X-CSRF-Token', value: ajax.token});
-    }
-  };
-
-  function Ajax(args){
-    mergeArgs(this, args);
-    mergeCallbacks(this, args);
-    validateAjax(this);
-    defaultHeaders(this);
-
-    return this;
-  }
-
-  /**
-   * Constructs, and sends ajax request.
-   *
-   * @memberOf Ajax
-   * @param {object} args - see Ajax constructor.
-   */
-  Ajax.request = function(args){
-    return new Ajax(args).send();
-  };
-
-  /**
-   * Sends ajax request.
-   *
-   * @memberOf Ajax
-   */
-  Ajax.prototype.send = function(){
-    var xhr = createRequest(this);
-
-    setHeaders(this, xhr);
-
-    bindEvents(this, xhr);
-    xhr.send(parseData(this));
-
-    return this;
-  };
-
-  var define = window.define || null;
-
-  if(typeof define === 'function' && define.amd){
-    define('ajax', [], function(){return Ajax;}); // amd
-  }else{
-    window.Ajax = Ajax;
-  }
-}(this));
-
+  });
+})(window, document);

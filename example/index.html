@@ -13,7 +13,14 @@
 
     <script>
       var options = {
-        url: '/',
+        url: 'http://192.168.1.106:8000',
+        method: 'POST',
+        type: 'JSON',
+        data: {
+          body: '{"teapot": true}',
+          //status: 418,
+          headers: {'Content-Type': 'application/json'},
+        },
         onStart: function(){console.log('Ajax start');},
         onFinish: function(){console.log('Ajax finish');},
         onSuccess: function(){console.log('Ajax success yo!');},
@@ -21,7 +28,6 @@
         onAbort: function(){console.log('Ajax abort');}
       }
 
-      Ajax.request(options);
       Ajax.request(options);
     </script>
   </body>
