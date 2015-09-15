@@ -33,9 +33,16 @@
       return out;
     })(CONTENT_TYPES);
 
+    var isLocal = function(url) {
+      var a = document.createElement('a');
+
+      a.href = url;
+
+      return a.hostname === window.location.hostname;
+    };
 
     /** @returns xhr instance */
-    var xhrFactory = function(xDomain) {
+    var xhrFactory = function(url) {
       var xhr = new XMLHttpRequest();
 
       // ie >= 10 and browsers
@@ -43,8 +50,8 @@
         return xhr;
       }
 
-      // ie9
-      if(xDomain) {
+      // ie9 xDomain
+      if(!isLocal(url)) {
         return new XDomainRequest();
       }
 
@@ -62,7 +69,7 @@
      */
     var Request = function(args) {
       this.args = args;
-      this.xhr = xhrFactory(args.xDomain);
+      this.xhr = xhrFactory(args.url);
       this.url = args.url;
       this.method = args.method || 'GET';
       this.type = args.type || TYPES[0];
