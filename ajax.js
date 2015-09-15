@@ -68,22 +68,26 @@
      * @class Request
      */
     var Request = function(args) {
-      this.args = args;
-      this.xhr = xhrFactory(args.url);
-      this.url = args.url;
-      this.method = args.method || 'GET';
-      this.type = args.type || TYPES[0];
-      this.data = args.data || {};
-      this.token = args.token || this._getToken();
-      this.timeout = args.timeout || 0;
-      this.headers = args.headers || [];
+      var self = this;
 
-      // TODO: Replace with events
-      this.onSuccess = args.onSuccess || noop;
-      this.onError = args.onError || noop;
-      this.onStart = args.onStart || noop;
-      this.onFinish = args.onFinish || noop;
-      this.onTimeout = args.onTimeout || noop;
+      self.xhr = xhrFactory(args.url);
+      self.url = args.url;
+      self.method = args.method || 'GET';
+      self.type = args.type || TYPES[0];
+      self.data = args.data || {};
+      self.token = args.token || self._getToken();
+      self.timeout = args.timeout || 0;
+      self.headers = args.headers || [];
+
+      [
+        'onSuccess',
+        'onError',
+        'onStart',
+        'onFinish',
+        'onTimeout'
+      ].forEach(function(callback) {
+        self[callback] = args[callback] || noop;
+      });
     };
 
     Request.prototype = {
