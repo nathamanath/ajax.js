@@ -16,18 +16,17 @@
         url: 'http://echo.nathansplace.co.uk/echo',
         method: 'POST',
         type: 'JSON',
-        xDomain: true,
         headers: { token: 'testing' },
         data: {
           body: '{"teapot": true}',
           status: 500,
           headers: {'Content-Type': 'application/json'},
         },
-        onStart: function(){console.log('Ajax start');},
-        onFinish: function(){console.log('Ajax finish');},
-        onSuccess: function(){console.log('Ajax success yo!');},
-        onError: function(){console.log('Ajax error');},
-        onAbort: function(){console.log('Ajax abort');}
+        onStart: function(){ console.log('Ajax start'); },
+        onFinish: function(){ console.log('Ajax finish'); },
+        onSuccess: function(){ console.log('Ajax success yo!'); },
+        onError: function(){ console.log('Ajax error'); },
+        onAbort: function(){ console.log('Ajax abort'); }
       }
 
       Ajax.request(options);
