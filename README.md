@@ -4,7 +4,7 @@ Make ajax requests with ease.
 
 Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE >= 9.
 
-For ie8, see ie8 branch
+#### For ie8, see ie8 branch
 
 ## Usage
 
@@ -50,6 +50,10 @@ Heres some jsdoc for `Ajax.request` params:
 
 ## Development
 
+### TODO:
+
 * Add means of configuration... set defaults etc..
-* Addd method to parse form values to params.
-* Should callbacks be passed a normalized request object? - test in ie 9
+* Add method to parse form object to params.
+* Should callback params be passed a normalized request object? - test in ie 9
+* Allow for file uploads in moddern browsers.
+* `args.data` should optionaly take `FormData` instance

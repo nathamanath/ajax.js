@@ -12,16 +12,16 @@
     <script src="./ajax.js"></script>
 
     <script>
+      var data = new FormData();
+
+      data.append('body', '{teapot: true}');
+      data.append('status', 412);
+
       var options = {
-        url: 'http://echo.nathansplace.co.uk/echo',
+        url: 'http://localhost:9292/echo',
         method: 'POST',
-        type: 'JSON',
         headers: { token: 'testing' },
-        data: {
-          body: '{"teapot": true}',
-          status: 500,
-          headers: {'Content-Type': 'application/json'},
-        },
+        data: data,
         onStart: function(){ console.log('Ajax start'); },
         onFinish: function(){ console.log('Ajax finish'); },
         onSuccess: function(){ console.log('Ajax success yo!'); },
