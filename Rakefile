@@ -1,18 +1,13 @@
 require 'uglifier'
 require "jshintrb/jshinttask"
-require 'jasmine'
-require 'listen'
 
 load 'jasmine/tasks/jasmine.rake'
 
 SOURCE = 'ajax.js'
-DOCS_DIR = File.expand_path('../doc', __FILE__)
 
 def minfile
   "#{File.basename(SOURCE, '.js')}.min.js"
 end
-
-task default: :watch
 
 desc 'Lint, test, docs, and minify'
 task :build => [:lint, :minify]
@@ -56,7 +51,6 @@ desc 'Remove compiled bits'
 task :clean do
   puts 'Cleaning...'
 
-  FileUtils.rm_r DOCS_DIR
   FileUtils.rm minfile
 
   puts 'Done.'

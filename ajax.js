@@ -1,22 +1,6 @@
 (function(window, document, Object) {
   'use strict';
 
-  /**
-   * @class Ajax
-   * @param {string} args.url - Request url
-   * @param {string} [args.method=GET] - Request method. Should be upper case string
-   * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`.
-   * @param {object} [args.data] - Request params as js object.
-   * @param {string} [args.token] - Manually set X-CSRF-Token token header.
-   * @param {integer} [args.timeout] - Request timeout. Default is no timeout.
-   * @param {object} [args.object] - Request headers as key value pairs.
-   * @param {function} [args.onStart] - Callback fired at start of request.
-   * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
-   * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
-   * @param {function} [args.onTimeout] - Callback fired at if request times out.
-   * @param {function} [args.onFinish] - Callback fired after request successful or not.
-   */
-
   (function(window, factory) {
     // Expose Ajax
     var define = window.define || null;
@@ -229,7 +213,25 @@
       }
     };
 
+    /** @class Ajax */
     return {
+      /**
+       * Makes an ajax request...
+       *
+       * @static
+       * @param {string} args.url - Request url
+       * @param {string} [args.method=GET] - Request method. Should be upper case string
+       * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`.
+       * @param {object} [args.data] - Request params as js object.
+       * @param {string} [args.token] - Manually set X-CSRF-Token token header.
+       * @param {integer} [args.timeout] - Request timeout. Default is no timeout.
+       * @param {object} [args.object] - Request headers as key value pairs.
+       * @param {function} [args.onStart] - Callback fired at start of request.
+       * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
+       * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
+       * @param {function} [args.onTimeout] - Callback fired at if request times out.
+       * @param {function} [args.onFinish] - Callback fired after request successful or not.
+       */
       request: function(args) {
         return new Request(args).init();
       }
