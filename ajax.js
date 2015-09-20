@@ -1,4 +1,4 @@
-(function(window, document) {
+(function(window, document, Object) {
   'use strict';
 
   (function(window, factory) {
@@ -77,7 +77,7 @@
       self.data = args.data || {};
       self.token = args.token || self._getToken();
       self.timeout = args.timeout || 0;
-      self.headers = args.headers || [];
+      self.headers = args.headers || {};
 
       [
         'onSuccess',
@@ -136,25 +136,24 @@
         }
       },
 
-      /** Are we using XdomainRequest */
+      /** Are we using XdomainRequest object? */
       _xDomainRequest: function() {
         return !!this.xhr.constructor.toString().match('XDomainRequest');
       },
 
       _setRequestHeaders: function() {
-        // no headers for XDomainRequest :(
-        if(this._xDomainRequest()) {
+        var self = this;
+
+        // no headers for XDomainRequest (ie < 10)  :(
+        if(self._xDomainRequest()) {
           return;
         }
 
-        var headers = this.headers;
-        var header;
+        var headers = self.headers;
 
-        for(var i = 0, l = headers.length; i < l; i++) {
-          header = headers[i];
-
-          this.xhr.setRequestHeader(header.key, header.value);
-        }
+        Object.keys(headers).forEach(function(key) {
+          self.xhr.setRequestHeader(key, headers[key]);
+        });
       },
 
       _validate: function() {
@@ -171,10 +170,10 @@
         var headers = this.headers;
         var token = this.token;
 
-        headers.push({ key: 'Content-Type', value: this._contentType() });
+        headers['Content-Type'] = this._contentType();
 
         if(token) {
-          headers.push({ key:'X-CSRF-Token', value: token });
+          headers['X-CSRF-Token'] = token;
         }
       },
 
@@ -222,4 +221,4 @@
     };
 
   });
-})(window, document);
+})(window, document, Object);
