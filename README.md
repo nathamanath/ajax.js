@@ -48,10 +48,8 @@ Heres some jsdoc for `Ajax.request` params:
 * The first and only argument passed to all callbacks is the js request object.
 * `XDomainRequest` does not allow custom headers. (only affects ie9 cross domain requests).
 
-#### Note
-
-ies `XDomainRequest` does not allow you to set headers.
-
 ## Development
 
+* Add means of configuration... set defaults etc..
+* Addd method to parse form values to params.
 * Should callbacks be passed a normalized request object? - test in ie 9
