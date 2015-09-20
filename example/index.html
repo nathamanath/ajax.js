@@ -22,11 +22,12 @@
         method: 'POST',
         headers: { token: 'testing' },
         data: data,
+        timeout: 500,
         onStart: function(){ console.log('Ajax start'); },
         onFinish: function(){ console.log('Ajax finish'); },
         onSuccess: function(){ console.log('Ajax success yo!'); },
         onError: function(){ console.log('Ajax error'); },
-        onAbort: function(){ console.log('Ajax abort'); }
+        onTimeout: function() { console.log('Ajax timeout'); }
       }
 
       Ajax.request(options);

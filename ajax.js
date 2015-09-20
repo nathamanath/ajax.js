@@ -80,9 +80,9 @@
       self.headers = args.headers || {};
 
       [
+        'onStart',
         'onSuccess',
         'onError',
-        'onStart',
         'onFinish',
         'onTimeout'
       ].forEach(function(callback) {
