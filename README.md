@@ -57,3 +57,4 @@ Heres some jsdoc for `Ajax.request` params:
 * Should callback params be passed a normalized request object? - test in ie 9
 * Allow for file uploads in moddern browsers.
 * `args.data` should optionaly take `FormData` instance
+* multipart/form-data
