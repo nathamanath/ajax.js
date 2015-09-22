@@ -12,13 +12,19 @@
     <script src="./ajax.js"></script>
 
     <script>
+      var data = new FormData();
+
+      data.append('body', 'cool');
+      data.append('status', '412');
+
       var options = {
+        url: 'http://172.17.0.2/echo',
         method: 'POST',
         headers: {
           token: 'testing'
         },
         data: {
-          name: 'nathan'
+          status: 412
         },
         timeout: 500,
         onStart: function(){ console.log('Ajax start'); },
@@ -27,18 +33,6 @@
         onError: function(){ console.log('Ajax error'); },
         onTimeout: function() { console.log('Ajax timeout'); }
       }
-
-      Ajax.configure({
-        url: '/',
-        headers: {
-          nathan: 'awesome'
-        },
-        data: {
-          things: true,
-          name: 'dfdf'
-        },
-        onStart: function(){ console.log('Ajax pop'); }
-      });
 
       Ajax.request(options);
     </script>

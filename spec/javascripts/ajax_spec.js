@@ -8,6 +8,12 @@ describe('Ajax', function(){
   });
 
 
+  describe('#configure', function() {
+    it('sets defaults for future calls to #request');
+  });
+
+
+
   describe('#request', function() {
 
     it('requires args.url', function(){
@@ -104,6 +110,12 @@ describe('Ajax', function(){
     });
 
 
+
+
+    describe('args.data', function() {
+      it('takes an object');
+      it('takes FormData instance');
+    });
 
 
 
