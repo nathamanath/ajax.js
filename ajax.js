@@ -20,6 +20,14 @@
       'JSON': 'application/json'
     };
 
+    var CALLBACKS = [
+      'onStart',
+      'onSuccess',
+      'onError',
+      'onFinish',
+      'onTimeout'
+    ];
+
     // ['URLENCODED', 'JSON'...]
     var TYPES = (function(CONTENT_TYPES){
       var out = [];
@@ -68,8 +76,25 @@
       data: {},
       token: null,
       timeout: 0,
-      headers: {}
+      headers: {},
     }
+
+    CALLBACKS.forEach(function(callback) {
+      defaults[callback] = noop;
+    });
+
+    /**
+     * @param {object} a
+     * @param {object} b
+     * @returns {object} - a merged into b
+     */
+    var merge = function(a, b) {
+      Object.keys(a).forEach(function(key) {
+        b[key] = a[key];
+      });
+
+      return b;
+    };
 
 
     /**
@@ -81,22 +106,18 @@
       var self = this;
 
       self.xhr = xhrFactory(args.url);
+
       self.url = args.url || defaults.url;
       self.method = args.method || defaults.method;
       self.type = args.type || defaults.type;
-      self.data = args.data || defaults.data;
       self.token = args.token || defaults.token || self._getToken();
       self.timeout = args.timeout || defaults.timeout;
-      self.headers = args.headers || defaults.headers;
 
-      [
-        'onStart',
-        'onSuccess',
-        'onError',
-        'onFinish',
-        'onTimeout'
-      ].forEach(function(callback) {
-        self[callback] = args[callback] || defaults[callback] || noop;
+      self.headers = merge(args.headers || {}, defaults.headers);
+      self.data = merge(args.data || {}, defaults.data);
+
+      CALLBACKS.forEach(function(callback) {
+        self[callback] = args[callback] || defaults[callback];
       });
     };
 
@@ -246,8 +267,16 @@
         return new Request(args).init();
       },
 
-      configure: function(defaults) {
-        merge(defaults, args);
+      /**
+       * Change defaults for #request
+       *
+       * @static
+       * @param {object} config - Defaults for future calls to #request. Keys are
+       * the same as those documented for #request.
+       * @returns {object} - new defaults for #request (config merged into defaults)
+       */
+      configure: function(config) {
+        return merge(config, defaults);
       }
     };
 

@@ -13,9 +13,10 @@
 
     <script>
       var options = {
-        //url: 'http://localhost:9292/echo',
         method: 'POST',
-        headers: { token: 'testing' },
+        headers: {
+          token: 'testing'
+        },
         data: {
           name: 'nathan'
         },
@@ -28,7 +29,15 @@
       }
 
       Ajax.configure({
-        url: '/'
+        url: '/',
+        headers: {
+          nathan: 'awesome'
+        },
+        data: {
+          things: true,
+          name: 'dfdf'
+        },
+        onStart: function(){ console.log('Ajax pop'); }
       });
 
       Ajax.request(options);
