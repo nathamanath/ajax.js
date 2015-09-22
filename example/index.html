@@ -13,7 +13,7 @@
 
     <script>
       var options = {
-        url: 'http://localhost:9292/echo',
+        //url: 'http://localhost:9292/echo',
         method: 'POST',
         headers: { token: 'testing' },
         data: {
@@ -26,6 +26,10 @@
         onError: function(){ console.log('Ajax error'); },
         onTimeout: function() { console.log('Ajax timeout'); }
       }
+
+      Ajax.configure({
+        url: '/'
+      });
 
       Ajax.request(options);
     </script>

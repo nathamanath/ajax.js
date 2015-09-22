@@ -61,6 +61,16 @@
 
     var noop = function() {};
 
+    var defaults = {
+      url: null,
+      method: 'GET',
+      type: 'URLENCODED',
+      data: {},
+      token: null,
+      timeout: 0,
+      headers: {}
+    }
+
 
     /**
      * Represents an ajax request
@@ -71,13 +81,13 @@
       var self = this;
 
       self.xhr = xhrFactory(args.url);
-      self.url = args.url;
-      self.method = args.method || 'GET';
-      self.type = args.type || TYPES[0];
-      self.data = args.data || {};
-      self.token = args.token || self._getToken();
-      self.timeout = args.timeout || 0;
-      self.headers = args.headers || {};
+      self.url = args.url || defaults.url;
+      self.method = args.method || defaults.method;
+      self.type = args.type || defaults.type;
+      self.data = args.data || defaults.data;
+      self.token = args.token || defaults.token || self._getToken();
+      self.timeout = args.timeout || defaults.timeout;
+      self.headers = args.headers || defaults.headers;
 
       [
         'onStart',
@@ -86,7 +96,7 @@
         'onFinish',
         'onTimeout'
       ].forEach(function(callback) {
-        self[callback] = args[callback] || noop;
+        self[callback] = args[callback] || defaults[callback] || noop;
       });
     };
 
@@ -234,6 +244,10 @@
        */
       request: function(args) {
         return new Request(args).init();
+      },
+
+      configure: function(defaults) {
+        merge(defaults, args);
       }
     };
 
