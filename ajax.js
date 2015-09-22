@@ -101,11 +101,10 @@
      * Represents an ajax request
      *
      * @class Request
+     * @param {object} args - See Ajax.request
      */
     var Request = function(args) {
       var self = this;
-
-      self.xhr = xhrFactory(args.url);
 
       self.url = args.url || defaults.url;
       self.method = args.method || defaults.method;
@@ -123,20 +122,24 @@
 
     Request.prototype = {
       init: function() {
-        this._validate();
-        this._defaultHeaders();
+        var self = this;
 
-        this.xhr.open(this.method, this.url, true);
-        this.xhr.timeout = this.timeout;
+        self._validate();
+        self._defaultHeaders();
 
-        this._setRequestHeaders();
-        this._bindEvents();
+        self.xhr = xhrFactory(self.url);
 
-        var xhr = this.xhr;
+        self.xhr.open(self.method, self.url, true);
+        self.xhr.timeout = self.timeout;
 
-        this.onStart(xhr);
+        self._setRequestHeaders();
+        self._bindEvents();
 
-        return this.xhr.send(this._parseData());
+        var xhr = self.xhr;
+
+        self.onStart(xhr);
+
+        return self.xhr.send(self._parseData());
       },
 
       _bindEvents: function() {
@@ -147,8 +150,15 @@
 
         // TODO: this is a bit nasty
         if(this._xDomainRequest()) {
-          xhr.onload = self.onSuccess;
-          xhr.onerror = self.onError;
+          xhr.onload = function() {
+            self.onSuccess();
+            self.onFinish();
+          };
+
+          xhr.onerror = function() {
+            self.onError();
+            self.onFinish();
+          }
         } else {
 
           xhr.onreadystatechange = function(){
@@ -167,7 +177,7 @@
         }
       },
 
-      /** Are we using XdomainRequest object? */
+      /** Are we using XDomainRequest object? */
       _xDomainRequest: function() {
         return !!this.xhr.constructor.toString().match('XDomainRequest');
       },
@@ -223,7 +233,7 @@
         return null;
       },
 
-      /** data formatted for request type */
+      /** @returns {string} - this.data formatted for request type, this.type */
       _parseData: function() {
         if(this.type === 'JSON') {
           return JSON.stringify(this.data);
@@ -232,7 +242,7 @@
         }
       },
 
-      /** make url params from this.data object */
+      /** @returns this.data as url encoded params */
       _dataToURLEncoded: function() {
         var data = this.data;
 
