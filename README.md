@@ -52,7 +52,6 @@ Heres some jsdoc for `Ajax.request` params:
 
 ### TODO:
 
-* Add means of configuration... set defaults etc..
 * Add method to parse form object to params.
 * Should callback params be passed a normalized request object? - test in ie 9
 * Allow for file uploads in moddern browsers.
