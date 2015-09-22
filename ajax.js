@@ -14,7 +14,6 @@
     }
   })(window, function() {
 
-    //TODO: Add other common types.
     var CONTENT_TYPES = {
       'URLENCODED': 'application/x-www-form-urlencoded',
       'JSON': 'application/json'
@@ -48,6 +47,10 @@
 
       return a.hostname === window.location.hostname;
     };
+
+    var isFormData = function(data) {
+      return !!data.constructor.toString().match('FormData');
+    }
 
     /** @returns xhr instance */
     var xhrFactory = function(url) {
@@ -96,7 +99,6 @@
       return b;
     };
 
-
     /**
      * Represents an ajax request
      *
@@ -113,7 +115,8 @@
       self.timeout = args.timeout || defaults.timeout;
 
       self.headers = merge(args.headers || {}, defaults.headers);
-      self.data = merge(args.data || {}, defaults.data);
+
+      self.data = isFormData(args.data) ? args.data : merge(args.data || {}, defaults.data);
 
       CALLBACKS.forEach(function(callback) {
         self[callback] = args[callback] || defaults[callback];
@@ -211,7 +214,9 @@
         var headers = this.headers;
         var token = this.token;
 
-        headers['Content-Type'] = this._contentType();
+        if(!isFormData(this.data)) {
+          headers['Content-Type'] = this._contentType();
+        }
 
         if(token) {
           headers['X-CSRF-Token'] = token;
@@ -233,12 +238,18 @@
         return null;
       },
 
-      /** @returns {string} - this.data formatted for request type, this.type */
+      /** @returns this.data formatted for request type, this.type */
       _parseData: function() {
-        if(this.type === 'JSON') {
-          return JSON.stringify(this.data);
+        var self = this;
+
+        if(self.data.constructor.toString().match('FormData')) {
+          return self.data;
+        }
+
+        if(self.type === 'JSON') {
+          return JSON.stringify(self.data);
         } else {
-          return this._dataToURLEncoded();
+          return self._dataToURLEncoded();
         }
       },
 

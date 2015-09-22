@@ -31,8 +31,8 @@ Heres some jsdoc for `Ajax.request` params:
 ```
   * @param {string} args.url - Request url
   * @param {string} [args.method=GET] - Request method. Should be upper case string
-  * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`.
-  * @param {object} [args.data] - Request params as js object.
+  * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`. Not used if args.data is FormData
+  * @param {object} [args.data] - Request params as js object or as FormData instance.
   * @param {string} [args.token] - Manually set X-CSRF-Token token header.
   * @param {integer} [args.timeout] - Request timeout. Default is no timeout.
   * @param {object} [args.headers] - Request headers as key value pairs.
@@ -52,8 +52,7 @@ Heres some jsdoc for `Ajax.request` params:
 
 ### TODO:
 
-* Add method to parse form object to params.
-* Should callback params be passed a normalized request object? - test in ie 9
+* Add method to parse form object to params... could allow args.data to be form object?
 * Allow for file uploads in moddern browsers.
-* `args.data` should optionaly take `FormData` instance
 * multipart/form-data
+* Should callback params be passed a normalized request object? - test in ie 9
