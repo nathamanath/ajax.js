@@ -5,7 +5,8 @@
     // Expose Ajax
     var define = window.define || null;
 
-    if(typeof define === 'function' && define.amd){ // AMD
+    if(typeof define === 'function' && define.amd){
+      // AMD
       define('ajax', [], function() {
         return factory();
       });
@@ -40,6 +41,7 @@
       return out;
     })(CONTENT_TYPES);
 
+    /** @returns {bool} */
     var isLocal = function(url) {
       var a = document.createElement('a');
 
@@ -48,6 +50,7 @@
       return a.hostname === window.location.hostname;
     };
 
+    /** @returns {bool} */
     var isFormData = function(data) {
       return !!data.constructor.toString().match('FormData');
     }
@@ -72,6 +75,10 @@
 
     var noop = function() {};
 
+    // Cause minification
+    var objectKeys = Object.keys;
+
+    /** Default args for ajax request. */
     var defaults = {
       url: null,
       method: 'GET',
@@ -79,7 +86,7 @@
       data: {},
       token: null,
       timeout: 0,
-      headers: {},
+      headers: {}
     }
 
     CALLBACKS.forEach(function(callback) {
@@ -92,12 +99,49 @@
      * @returns {object} - a merged into b
      */
     var merge = function(a, b) {
-      Object.keys(a).forEach(function(key) {
+      objectKeys(a).forEach(function(key) {
         b[key] = a[key];
       });
 
       return b;
     };
+
+    var mergeData = function(a, b) {
+      if(isFormData(a)) {
+        objectKeys(b).forEach(function(key) {
+          a.append(key, b[key]);
+        });
+
+        return a;
+      } else {
+        return merge(b, a);
+      }
+    };
+
+    /**
+     * Take form and turn into js object
+     *
+     * @param form - form object
+     * @returns form data as js object
+     */
+    var serializeForm = function(form) {
+      var fields = form.querySelectorAll('input, textarea, select');
+
+      var out = {};
+
+      [].forEach.call(fields, function(field) {
+        var key = field.name;
+        var value = field.value;
+
+        if(key) {
+          out[key] = value;
+        }
+      });
+
+      return out;
+    }
+
+
 
     /**
      * Represents an ajax request
@@ -116,7 +160,7 @@
 
       self.headers = merge(args.headers || {}, defaults.headers);
 
-      self.data = isFormData(args.data) ? args.data : merge(args.data || {}, defaults.data);
+      self.data = self._prepData(args.data);
 
       CALLBACKS.forEach(function(callback) {
         self[callback] = args[callback] || defaults[callback];
@@ -143,6 +187,22 @@
         self.onStart(xhr);
 
         return self.xhr.send(self._parseData());
+      },
+
+      /**
+       * @param data - request data / params
+       * @returns data params merged with defaults
+       */
+      _prepData: function(data) {
+        data = data || {};
+
+        if(!!data.constructor.toString().match('HTMLFormElement')) {
+          data = serializeForm(data);
+        } else {
+          data = data;
+        }
+
+        return mergeData(data, defaults.data);
       },
 
       _bindEvents: function() {
@@ -195,7 +255,7 @@
 
         var headers = self.headers;
 
-        Object.keys(headers).forEach(function(key) {
+        objectKeys(headers).forEach(function(key) {
           self.xhr.setRequestHeader(key, headers[key]);
         });
       },
@@ -241,13 +301,14 @@
       /** @returns this.data formatted for request type, this.type */
       _parseData: function() {
         var self = this;
+        var data = self.data;
 
-        if(self.data.constructor.toString().match('FormData')) {
-          return self.data;
+        if(isFormData(data)) {
+          return data;
         }
 
         if(self.type === 'JSON') {
-          return JSON.stringify(self.data);
+          return JSON.stringify(data);
         } else {
           return self._dataToURLEncoded();
         }
@@ -257,7 +318,7 @@
       _dataToURLEncoded: function() {
         var data = this.data;
 
-        var out = Object.keys(data).map(function(key) {
+        var out = objectKeys(data).map(function(key) {
           return key + '=' + encodeURIComponent(data[key]);
         });
 

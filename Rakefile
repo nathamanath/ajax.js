@@ -1,5 +1,5 @@
 require 'uglifier'
-require 'jshintrb/jshinttask'
+#require 'jshintrb/jshinttask'
 require 'jasmine'
 
 load 'jasmine/tasks/jasmine.rake'
