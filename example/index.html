@@ -9,6 +9,17 @@
 
     <p>See my ajax!</p>
 
+    <form>
+      <input name="one" value="value">
+      <textarea name="stuff">
+        things
+      </textarea>
+
+      <select name="select">
+        <option value="selected">a</option>
+      </select>
+    </form>
+
     <script src="./ajax.js"></script>
 
     <script>
@@ -18,14 +29,12 @@
       data.append('status', '412');
 
       var options = {
-        url: 'http://172.17.0.2/echo',
+        url: '/',
         method: 'POST',
         headers: {
           token: 'testing'
         },
-        data: {
-          status: 412
-        },
+        data: data,
         timeout: 500,
         onStart: function(){ console.log('Ajax start'); },
         onFinish: function(){ console.log('Ajax finish'); },
@@ -33,6 +42,12 @@
         onError: function(){ console.log('Ajax error'); },
         onTimeout: function() { console.log('Ajax timeout'); }
       }
+
+      Ajax.configure({
+        data: {
+          testing: 'yeah'
+        }
+      });
 
       Ajax.request(options);
     </script>

@@ -53,6 +53,7 @@ Heres some jsdoc for `Ajax.request` params:
 ### TODO:
 
 * Add method to parse form object to params... could allow args.data to be form object?
-* Allow for file uploads in moddern browsers.
+* better XMLHttpRequest 2 intergration
 * multipart/form-data
+* formdata to json / urlencoded
 * Should callback params be passed a normalized request object? - test in ie 9
