@@ -142,7 +142,6 @@
     }
 
 
-
     /**
      * Represents an ajax request
      *
@@ -335,7 +334,7 @@
        * @param {string} args.url - Request url
        * @param {string} [args.method=GET] - Request method. Should be upper case string
        * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`.
-       * @param {object} [args.data] - Request params as js object.
+       * @param {object} [args.data] - Request params as js object, form object, or FormData.
        * @param {string} [args.token] - Manually set X-CSRF-Token token header.
        * @param {integer} [args.timeout] - Request timeout. Default is no timeout.
        * @param {object} [args.object] - Request headers as key value pairs.

@@ -111,7 +111,6 @@ describe('Ajax', function(){
 
 
 
-
     describe('args.data', function() {
       it('takes an object');
       it('takes a form object');
