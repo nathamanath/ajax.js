@@ -50,7 +50,7 @@
       return a.hostname === window.location.hostname;
     };
 
-    /** @returns {bool} */
+    /** @returns {boolean} */
     var isFormData = function(data) {
       return !!data.constructor.toString().match('FormData');
     }
@@ -264,7 +264,7 @@
           throw new Error('Ajax: Invalid type');
         }
 
-        if(!this.url) {
+        if(!this.url && !defaults.url) {
           throw new Error('Ajax: URL required');
         }
       },

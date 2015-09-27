@@ -1,6 +1,23 @@
 describe('Ajax', function(){
   beforeEach(function(){
     jasmine.Ajax.install();
+
+    // Reset defaults between tests
+    // TODO: Would a reset method on Ajaxhelp anything but this?
+    Ajax.configure({
+      url: null,
+      method: 'GET',
+      type: 'URLENCODED',
+      data: {},
+      token: null,
+      timeout: 0,
+      headers: {},
+      onStart: function() {},
+      onFinish: function() {},
+      onTimeout: function() {},
+      onSuccess: function() {},
+      onError: function() {}
+    });
   });
 
   afterEach(function(){
@@ -9,7 +26,15 @@ describe('Ajax', function(){
 
 
   describe('#configure', function() {
-    it('sets defaults for future calls to #request');
+    it('sets defaults for future calls to #request', function() {
+      Ajax.configure({
+        url: 'http://palmsalami.com'
+      });
+
+      Ajax.request({});
+
+      expect(jasmine.Ajax.requests.mostRecent().url).toBe('http://palmsalami.com');
+    });
   });
 
 
@@ -112,9 +137,46 @@ describe('Ajax', function(){
 
 
     describe('args.data', function() {
-      it('takes an object');
-      it('takes a form object');
-      it('takes FormData instance');
+      it('takes an object', function() {
+        Ajax.request({
+          data: {
+            testing: true
+          },
+          url: '/'
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().params).toBe('testing=true');
+      });
+
+      it('takes a form object', function() {
+        var form = document.createElement('form');
+        var input = document.createElement('input');
+
+        input.name = 'testing';
+        input.value = 'true';
+
+        form.appendChild(input);
+
+        Ajax.request({
+          data: form,
+          url: '/'
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().params).toBe('testing=true');
+      });
+
+      it('takes FormData instance', function() {
+        var data = new FormData();
+
+        data.append('testing', true);
+
+        Ajax.request({
+          data: data,
+          url: '/'
+        });
+
+        expect(jasmine.Ajax.requests.mostRecent().params).toBe(data);
+      });
     });
 
 
