@@ -3,7 +3,7 @@ describe('Ajax', function(){
     jasmine.Ajax.install();
 
     // Reset defaults between tests
-    // TODO: Would a reset method on Ajaxhelp anything but this?
+    // TODO: Would a reset method on Ajax with help anything but this?
     Ajax.configure({
       url: null,
       method: 'GET',
