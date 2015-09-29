@@ -8,7 +8,8 @@ Ajax.js has 0 external dependencies, and works in all proper browsers as well as
 
 ## Usage
 
-The `Ajax` object has only 1 method; `request`. It makes ajax requests.
+The `Ajax` object has only 2 methods; `request`, `and configure`. request makes ajax requests.,
+Configure sets defaults for  furure calls to request.
 
 ### Example
 
@@ -52,8 +53,7 @@ Heres some jsdoc for `Ajax.request` params:
 
 ### TODO:
 
-* Add method to parse form object to params... could allow args.data to be form object?
 * better XMLHttpRequest 2 intergration
 * multipart/form-data
 * formdata to json / urlencoded
-* Should callback params be passed a normalized request object? - test in ie 9
+* closure compiler time
