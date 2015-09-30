@@ -146,6 +146,7 @@
      * Represents an ajax request
      *
      * @class Request
+     * @private
      * @param {object} args - See Ajax.request
      */
     var Request = function(args) {
