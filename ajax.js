@@ -213,28 +213,27 @@
 
         // TODO: this is a bit nasty
         if(this._xDomainRequest()) {
+
           xhr.onload = function() {
-            self.onSuccess();
-            self.onFinish();
+            self.onSuccess(xhr);
+            self.onFinish(xhr);
           };
 
           xhr.onerror = function() {
-            self.onError();
-            self.onFinish();
+            self.onError(xhr);
+            self.onFinish(xhr);
           }
         } else {
 
           xhr.onreadystatechange = function(){
-            var request = this;
-
             if(request.readyState === 4) {
               if(request.status.toString().match(/2[0-9]{1,2}/)) {
-                self.onSuccess(request);
+                self.onSuccess(xhr);
               } else {
-                self.onError(request);
+                self.onError(xhr);
               }
 
-              self.onFinish(request);
+              self.onFinish(xhr);
             }
           };
         }
