@@ -226,8 +226,8 @@
         } else {
 
           xhr.onreadystatechange = function(){
-            if(request.readyState === 4) {
-              if(request.status.toString().match(/2[0-9]{1,2}/)) {
+            if(xhr.readyState === 4) {
+              if(xhr.status.toString().match(/2[0-9]{1,2}/)) {
                 self.onSuccess(xhr);
               } else {
                 self.onError(xhr);
