@@ -30,6 +30,7 @@
 
     // ['URLENCODED', 'JSON'...]
     var TYPES = (function(CONTENT_TYPES){
+
       var out = [];
 
       for(var key in CONTENT_TYPES){
@@ -39,6 +40,7 @@
       }
 
       return out;
+
     })(CONTENT_TYPES);
 
     /** @returns {bool} */
@@ -53,7 +55,7 @@
     /** @returns {boolean} */
     var isFormData = function(data) {
       return !!data.constructor.toString().match('FormData');
-    }
+    };
 
     /** @returns xhr instance */
     var xhrFactory = function(url) {
@@ -87,7 +89,7 @@
       token: null,
       timeout: 0,
       headers: {}
-    }
+    };
 
     CALLBACKS.forEach(function(callback) {
       defaults[callback] = noop;
@@ -139,7 +141,7 @@
       });
 
       return out;
-    }
+    };
 
 
     /**
@@ -186,7 +188,10 @@
 
         self.onStart(xhr);
 
-        return self.xhr.send(self._parseData());
+        // fix for ie9 xdomain
+        window.setTimeout(function() { self.xhr.send(self._parseData()); }, 0 );
+
+        return this;
       },
 
       /**
@@ -222,7 +227,10 @@
           xhr.onerror = function() {
             self.onError(xhr);
             self.onFinish(xhr);
-          }
+          };
+
+          xhr.ontimeout = noop;
+          xhr.pnprogress = noop;
         } else {
 
           xhr.onreadystatechange = function(){
@@ -241,7 +249,8 @@
 
       /** Are we using XDomainRequest object? */
       _xDomainRequest: function() {
-        return !!this.xhr.constructor.toString().match('XDomainRequest');
+        // TODO: make this nicer
+        return !('withCredentials' in new XMLHttpRequest()) && !isLocal();
       },
 
       _setRequestHeaders: function() {
