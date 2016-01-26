@@ -1,3 +1,6 @@
+require('jasmine-core')
+require('../../node_modules/jasmine-ajax/lib/mock-ajax')
+
 describe('Ajax', function(){
   beforeEach(function(){
     jasmine.Ajax.install();

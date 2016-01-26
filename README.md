@@ -54,14 +54,12 @@ Heres some jsdoc for `Ajax.request` params:
 
 ### Testing
 
-Uses jasmine gem.
+Uses jasmine.
 
-`rake jasmine` or `rake jasmine:ci`
+`npm run test`
 
 
 ### TODO:
 
-* better XMLHttpRequest 2 intergration
-* multipart/form-data
-* formdata to json / urlencoded
-* closure compiler time
+* get spec running on node
+* --mangle-props with uglifier

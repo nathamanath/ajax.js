@@ -23,13 +23,13 @@
     <script src="./ajax.js"></script>
 
     <script>
-      var data = new FormData();
-
-      data.append('body', 'cool');
-      data.append('status', '412');
+      var data = {
+        body: 'cool',
+        status: 200
+      }
 
       var options = {
-        url: '/',
+        url: 'http://echo.nathansplace.co.uk/echo',
         method: 'POST',
         headers: {
           token: 'testing'
