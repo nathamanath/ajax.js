@@ -8,15 +8,15 @@
   },
   "scripts": {
     "test": "./node_modules/jasmine-node/bin/jasmine-node --color spec",
-    "build": "uglifyjs --compress --mangle --source-map ajax.js.map --screw-ie8 -o ajax.min.js --comments -- ajax.js",
-    "lint": "./node_modules/jshint/bin/jshint ajax.js"
+    "prod": "uglifyjs --compress --mangle --source-map ajax.js.map --screw-ie8 -o ajax.min.js --comments -- ajax.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nathamanath/ajax.js.git"
   },
   "keywords": [
-    "ajax"
+    "ajax",
+    "xmlhttp"
   ],
   "author": "NathanG",
   "license": "MIT",
