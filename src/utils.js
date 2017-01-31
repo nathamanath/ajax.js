@@ -1,14 +1,25 @@
 /**
+ * Utility functions
+ */
+
+/**
+ * Merge object a into object b
+ *
  * @param {object} a
  * @param {object} b
  * @returns {object} - a merged into b
  */
 export const merge = function(a, b) {
-  objectKeys(a).forEach(function(key) {
-    b[key] = a[key]
+  let out = b
+
+  Object.keys(a).forEach(function(key) {
+    out[key] = a[key]
   })
 
-  return b
+  return out
 }
 
-export const noop = function() {}
+/**
+ * no operation
+ */
+export const noop = function() { }
