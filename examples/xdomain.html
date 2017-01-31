@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax: Cross domain request</title>
+  </head>
+
+  <body>
+
+    <h1>Ajax: Cross domain request</h1>
+
+    <p>Cross domain example</p>
+
+    <script src="./ajax.js"></script>
+
+    <script>
+      Ajax.xDomainRequest({
+        url: 'http://echo.nathansplace.co.uk/echo',
+        type: 'JOSN', // this is default type
+        method: 'POST',
+        // TODO: is stringify needed
+        data: JSON.stringify({ status: 418, body: { message: "I am a teapot!" } }),
+        onError: function(xhr) {
+          var message = JSON.parse(xhr.responseText).message;
+          alert(message)
+        }
+      });
+    </script>
+
+  </body>
+</html>

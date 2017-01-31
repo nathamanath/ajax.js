@@ -1,11 +1,13 @@
 /**
  * Ajax.js - cross browser xhr wrapper
  *
- * Supports ie >= 9
+ * Supports ie >= 9 and modern browsers
  *
  * @license - MIT
- * @author - NathanG https://github.com/nathamanath
+ * @author - NathanG https://github.com/nathamanath/ajax.js
  */
+
+ // TODO: run in browsers
 
 import XhrFactory from './xhr_factory'
 import { noop, merge } from './utils'
@@ -17,12 +19,11 @@ const DEFAULT_ARGS = {
   method: 'GET',
   type: 'JSON',
   data: {},
-  timeout: 0,
   headers: {},
   onStart: noop,
   onSuccess: noop,
   onFinish: noop,
-  onTimeout: noop
+  onError: noop
 }
 
 /**
@@ -42,7 +43,6 @@ const CONTENT_TYPES = {
  * @param {object} headers - key value pairs of request headers
  */
 const setHeaders = function(xhr, headers) {
-  // FIXME: this kills it atm
   Object.keys(headers).forEach(function(key) {
     xhr.setRequestHeader(key, headers[key])
   })
@@ -58,7 +58,6 @@ const validateArgs = function(args) {
   if(!args.url) throw new Error('Ajax: args.url required')
 
   // content type must be recognised
-  // TODO: could this be overkill... what if i want some other type?
   if(Object.keys(CONTENT_TYPES).indexOf(args.type) === -1){
     throw new Error('Ajax: args.type not recognised')
   }
@@ -78,8 +77,7 @@ const newXhrObject = function(args) {
 
   setHeaders(xhr, headers)
 
-  xhr.timeout = args.timeout
-  xhr.ontimeout = args.onTimeout
+  xhr.timeout = 0
 
   return xhr
 }
@@ -93,18 +91,15 @@ export default {
    * @param {string} [args.method=GET] - Request method. Should be upper case string
    * @param {string} [args.type=JSON] - Request type. Must be `URLENCODED`, `XML`, or `JSON`.
    * @param {object} [args.data] - Request data. passed directly to xhr.send
-   * @param {integer} [args.timeout=0] - Request timeout. Default is no timeout
    * @param {object} [args.headers] - Request headers as key value pairs.
    * @param {function} [args.onStart] - Callback fired at start of request.
    * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
    * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
-   * @param {function} [args.onTimeout] - Callback fired at if request times out.
    * @param {function} [args.onFinish] - Callback fired after request successful or not.
    */
   request: function(args) {
 
     args = merge(args, DEFAULT_ARGS)
-
     validateArgs(args)
 
     let xhr = newXhrObject(args)
@@ -113,12 +108,12 @@ export default {
       if(xhr.readyState === 4) {
         // Successful
         if(xhr.status.toString().match(/2[0-9]{1,2}/)) {
-          args.onSuccess(xhr);
+          args.onSuccess(xhr)
         } else {
-          args.onError(xhr);
+          args.onError(xhr)
         }
 
-        args.onFinish(xhr);
+        args.onFinish(xhr)
       }
     }
 
@@ -136,7 +131,6 @@ export default {
   xDomainRequest: function(args) {
 
     args = merge(args, DEFAULT_ARGS)
-
     validateArgs(args)
 
     let xhr = newXhrObject(args)
