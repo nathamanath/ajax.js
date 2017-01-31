@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -21,7 +22,7 @@
           document.write('Starting request...<br>');
         },
         onSuccess: function(xhr) {
-          let message = JSON.parse(xhr.responseText).message
+          var message = JSON.parse(xhr.responseText).message;
           document.write('Success! Got: "' + message + '"...<br>');
         },
         onFinish: function() {

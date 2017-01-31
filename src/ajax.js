@@ -7,8 +7,6 @@
  * @author - NathanG https://github.com/nathamanath/ajax.js
  */
 
- // TODO: run in browsers
-
 import XhrFactory from './xhr_factory'
 import { noop, merge } from './utils'
 
@@ -18,7 +16,7 @@ import { noop, merge } from './utils'
 const DEFAULT_ARGS = {
   method: 'GET',
   type: 'JSON',
-  data: {},
+  data: '',
   headers: {},
   onStart: noop,
   onSuccess: noop,
@@ -43,9 +41,12 @@ const CONTENT_TYPES = {
  * @param {object} headers - key value pairs of request headers
  */
 const setHeaders = function(xhr, headers) {
-  Object.keys(headers).forEach(function(key) {
-    xhr.setRequestHeader(key, headers[key])
-  })
+  // No headers for ie9 xdomain
+  if(xhr.constructor !== XDomainRequest) {
+    Object.keys(headers).forEach(function(key) {
+      xhr.setRequestHeader(key, headers[key])
+    })
+  }
 }
 
 /**
@@ -67,8 +68,8 @@ const validateArgs = function(args) {
  * @returns new mostly configured xhr instance. request type specific config is
  * added in request method
  */
-const newXhrObject = function(args) {
-  let xhr = XhrFactory.new()
+const newXhrObject = function(args, xdomain=false) {
+  let xhr = XhrFactory.new(xdomain)
   let headers = args.headers
 
   headers['Content-Type'] = CONTENT_TYPES[args.type]
@@ -76,8 +77,6 @@ const newXhrObject = function(args) {
   xhr.open(args.method, args.url, true)
 
   setHeaders(xhr, headers)
-
-  xhr.timeout = 0
 
   return xhr
 }
@@ -133,26 +132,41 @@ export default {
     args = merge(args, DEFAULT_ARGS)
     validateArgs(args)
 
-    let xhr = newXhrObject(args)
+    let xhr = XhrFactory.new(true)
+    let headers = args.headers
+
+    headers['Content-Type'] = CONTENT_TYPES[args.type]
+    // ie9 fix - onprogress must be set
+
+
+    xhr.open(args.method, args.url, true)
+
+    xhr.timeout = 0
+
+    setHeaders(xhr, headers)
+
+
+
 
     xhr.onload = function() {
       args.onSuccess(xhr)
       args.onFinish(xhr)
-    };
+    }
 
     xhr.onerror = function() {
       args.onError(xhr)
       args.onFinish(xhr)
-    };
+    }
 
-    // ie9 fix - onprogress must be set
     xhr.onprogress = noop
+    xhr.ontimeout = noop
+
 
     // Fires onstart consistantly pre request
     args.onStart(xhr)
 
     // fix for ie9 xdomain. Thanks Jolyon
-    window.setTimeout(function() {
+    global.setTimeout(function() {
       xhr.send(args.data)
     }, 0)
   }

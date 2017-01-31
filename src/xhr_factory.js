@@ -27,6 +27,6 @@ export default {
 
     // ie <= 8
     console.error('Ajax.js - Browser not supported.')
-    
+
   }
 }

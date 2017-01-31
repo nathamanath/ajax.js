@@ -81,9 +81,9 @@ See `./examples` for more usage examples.
 
 ## Development
 
-* run tests with `node test`
-* build with `npm build`
+* run tests with `npm run test`
+* build with `npm run build`
+* dev mode `npm run dev` watch src, keep build up to date
 
-TODO: build jsdocs
 TODO: run automated tests in real browsers
 TODO: get rid of webpack bloat from es5 build

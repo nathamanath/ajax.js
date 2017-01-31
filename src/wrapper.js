@@ -1,7 +1,7 @@
 /**
  * Used when compiling es5 version with webpack
- * Provides module definition for ES6(ES2015) module system, commonjs or amd
- * Otherwise makes Ajax a global object
+ * Provides module definition for ES6(ES2015) module system, commonjs or amd if
+ * present. Otherwise makes Ajax a global object.
  */
 
 import Ajax from './ajax'

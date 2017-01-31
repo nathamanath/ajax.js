@@ -1,19 +1,30 @@
 var path = require('path');
 var webpack = require("webpack");
 
+var env = process.env.WEBPACK_ENV;
+var plugins = []
+
+if (env === 'production') {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+  outputFile = 'ajax.min.js';
+} else {
+  outputFile = 'ajax.js';
+}
+
 module.exports = {
   entry: './src/wrapper.js',
 
   output: {
-    filename: 'ajax.js',
-    path: path.resolve(__dirname, 'dist')
+    filename: outputFile,
+    path: path.resolve(__dirname, 'dist'),
+    library: 'Ajax',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
 
-  plugins:[
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true
-    })
-  ],
+  plugins: plugins,
+
+  // devtool: 'source-map',
 
   module: {
     loaders: [
