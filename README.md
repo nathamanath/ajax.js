@@ -2,13 +2,7 @@
 
 Cross browser xhr wrapper for normalised ajax requests.
 
-Tested in:
-
-* ie >= 9,
-* edge,
-* chrome,
-* firefox,
-* safari.
+Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE >= 9.
 
 ## Usage
 
@@ -69,20 +63,11 @@ as `Ajax.request`.
 Most times when deploying ajax I write a wrapper object around it to handle any
 domain specific requirements like token management for example.
 
-The following example includes the value found in the csrf meta tag as a header
-with each request:
-
-```javascript
-  //TODO: nice short example wrapper
-```
-
-See `./examples` for more usage examples.
-
 ## Development
 
 * run tests with `npm run test`
 * build with `npm run build`
 * dev mode `npm run dev` watch src, keep build up to date
 
-TODO: run automated tests in real browsers
-TODO: get rid of webpack bloat from es5 build
+* TODO: run automated tests in real browsers
+* TODO: get rid of webpack bloat from es5 build
