@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax: Local request</title>
+  </head>
+
+  <body>
+
+    <h1>Ajax: Local request</h1>
+
+    <p>A minimal example taking advantage of defaults.</p>
+
+    <script src="./ajax.js"></script>
+
+    <script>
+      Ajax.request({
+        url: './result.json',
+        onStart: function() {
+          console.log('in onStart')
+        },
+        onSuccess: function(xhr) {
+          console.log('in onSuccess')
+
+          var message = JSON.parse(xhr.responseText).message;
+          console.log('Success! Got: "' + message + '"');
+        },
+        onFinish: function() {
+          console.log('in onFinish')
+        }
+      })
+    </script>
+
+  </body>
+</html>

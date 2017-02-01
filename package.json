@@ -1,33 +1,27 @@
 {
   "name": "ajax_js",
-  "version": "0.1.1",
-  "description": "cross browser ajax requests",
-  "main": "ajax.js",
-  "directories": {
-    "example": "example"
-  },
+  "version": "0.2.0",
+  "description": "",
+  "main": "./src/ajax.js",
   "scripts": {
-    "test": "./node_modules/jasmine-node/bin/jasmine-node --color spec",
-    "build": "uglifyjs --compress --mangle --source-map ajax.js.map --screw-ie8 -o ajax.min.js --comments -- ajax.js",
-    "lint": "./node_modules/jshint/bin/jshint ajax.js"
+    "build": "WEBPACK_ENV=development $(npm bin)/webpack --config ./webpack.config.js; WEBPACK_ENV=production $(npm bin)/webpack --config ./webpack.config.js",
+    "test": "$(npm bin)/mocha --compilers js:babel-core/register --recursive --reporter nyan ./test",
+    "dev": "WEBPACK_ENV=development $(npm bin)/webpack --config ./webpack.config.js  --progress --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nathamanath/ajax.js.git"
-  },
-  "keywords": [
-    "ajax"
-  ],
-  "author": "NathanG",
+  "author": "",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nathamanath/ajax.js/issues"
-  },
-  "homepage": "https://github.com/nathamanath/ajax.js#readme",
   "devDependencies": {
-    "jasmine-ajax": "^3.2.0",
-    "jasmine-node": "^1.14.5",
-    "jshint": "^2.9.1",
-    "uglify-js": "^2.6.1"
-  }
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-runtime": "^6.22.0",
+    "babel-polyfill": "^6.22.0",
+    "babel-preset-es2015": "^6.22.0",
+    "fake-xml-http-request": "^1.4.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "webpack": "^2.2.1",
+    "webpack-closure-compiler": "^2.1.3"
+  },
+  "dependencies": {}
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax: Cross domain request</title>
+  </head>
+
+  <body>
+
+    <h1>Ajax: Cross domain request</h1>
+
+    <p>Cross domain example</p>
+
+    <script type="text/javascript" src="./ajax.js"></script>
+
+    <script type="text/javascript">
+
+      Ajax.xDomainRequest({
+        url: 'http://echo.nathansplace.co.uk/echo?status=200&body=hello',
+        type: 'URLENCODED',
+        method: 'POST',
+        onSuccess: function(xhr) {
+          var message = xhr.responseText;
+          alert(message);
+        }
+      });
+
+    </script>
+
+  </body>
+</html>

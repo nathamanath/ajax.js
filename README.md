@@ -1,63 +1,88 @@
-# Ajax.js - Javascript ajax module
+# Ajax.js
 
-Make ajax requests with ease.
+Cross browser xhr wrapper for normalised ajax requests.
 
-Ajax.js has 0 external dependencies, and works in all proper browsers as well as IE >= 9.
+Tested in:
+
+* ie >= 9,
+* edge,
+* chrome,
+* firefox,
+* safari.
 
 ## Usage
 
-The `Ajax` object has only 2 methods; `request`, `and configure`. request makes ajax requests.
-Configure sets defaults for furure calls to request, and takes the same arguments as request.
+You can use either the es6 source version of ajax `./src/ajax.js`, or the
+compiled es5 version `./dist/ajax.js`. Basic usage is shown below, further usage
+examples can be found in `./examples`.
 
-### Example
+### local requests
+
+The example below shows an example with all options. See jsdocs for defaults.
+The only required option is `args.url`.
 
 ```javascript
-Ajax.request({
-    method: 'POST',
-    headers: { key: 'value' },
-    url: 'http://nathansplace.co.uk',
-    data: {
-      key: 'value'
+
+  Ajax.request({
+    url: '/path', // required param
+    type: 'JOSN', // this is default type
+    method: 'POST', // defaults to GET
+    data: JSON.stringify({ example: true }),
+    onStart: function(xhr) {
+      // xhr is your request object. you can modify it here
+      console.log('onStart called!');
     },
-    onSuccess: function(){
-        alert('It ruddy works!');
+    onSuccess: function(xhr) {
+      console.log('onSuccess called!');
+    },
+    onError: function(xhr) {
+      console.log('onError called!');
+    },
+    onFinish: function(xhr) {
+      console.log('onFinish called!');
     }
-});
+  });
 ```
 
-Heres some jsdoc for `Ajax.request` params:
+### cross domain requests
 
+Use `Ajax.xDomainRequest` to make cross domain requests. It takes the same arguments
+as `Ajax.request`.
+
+```javascript
+
+  // Cross domain example using less options
+  Ajax.xDomainRequest({
+    url: 'http://echo.nathansplace.co.uk/echo',
+    type: 'JOSN', // this is default type
+    method: 'POST',
+    data: JSON.stringify({ status: 418, body: { message: "I am a teapot!" } }),
+    onError: function(xhr) {
+      var message = JSON.parse(xhr.responseText).message;
+      alert(message)
+    }
+  });
 ```
-  * @param {string} args.url - Request url
-  * @param {string} [args.method=GET] - Request method. Should be upper case string
-  * @param {string} [args.type=URLENCODED] - Request type. Must be `URLENCODED`, or `JSON`. Not used if args.data is FormData
-  * @param {object} [args.data] - Request params as js object, form object, or as FormData instance.
-  * @param {string} [args.token] - Manually set X-CSRF-Token token header.
-  * @param {integer} [args.timeout] - Request timeout. Default is no timeout.
-  * @param {object} [args.headers] - Request headers as key value pairs.
-  * @param {function} [args.onStart] - Callback fired at start of request.
-  * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
-  * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
-  * @param {function} [args.onTimeout] - Callback fired at if request times out.
-  * @param {function} [args.onFinish] - Callback fired after request, successful or not.
+
+## Extending ajax
+
+Most times when deploying ajax I write a wrapper object around it to handle any
+domain specific requirements like token management for example.
+
+The following example includes the value found in the csrf meta tag as a header
+with each request:
+
+```javascript
+  //TODO: nice short example wrapper
 ```
 
-* The only required param is `args.url`. (Can be set via `#configure`)
-* `X-CSRF-Token` meta tag is detected and (if found) is used to create token header unless overriden in `args`.
-* The first and only argument passed to all callbacks is the js request object.
-* `XDomainRequest` does not allow custom headers. (only affects ie9 cross domain requests).
-
+See `./examples` for more usage examples.
 
 ## Development
 
-### Testing
+* run tests with `npm run test`
+* build with `npm run build`
+* dev mode `npm run dev` watch src, keep build up to date
 
-Uses jasmine.
-
-`npm run test`
-
-
-### TODO:
-
-* get spec running on node
-* --mangle-props with uglifier
+TODO: run automated tests in real browsers
+TODO: get rid of webpack bloat from es5 build
