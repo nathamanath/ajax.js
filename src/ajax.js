@@ -49,18 +49,26 @@ const validateArgs = function(args) {
   }
 }
 
+
 /**
- * @returns new mostly configured xhr instance. request type specific config is
- * added in request method
+ * make an ajax request
+ *
+ * @param {object} args
+ * @param {boolean} [xdomain=false] Description
  */
-const newXhrObject = function(args, xdomain=false) {
+const request = function(args, xdomain=false) {
+
+  args = merge(args, defaultArgs())
+  validateArgs(args)
+
   args.headers['Content-Type'] = CONTENT_TYPES[args.type]
 
   let xhr = XhrFactory.new(args, xdomain)
 
-  // xhr.open(args.method, args.url, true)
+  // Fires onStart consistantly pre request
+  args.onStart(xhr)
 
-  return xhr
+  xhr.send(args.data)
 }
 
 export default {
@@ -79,16 +87,7 @@ export default {
    * @param {function} [args.onFinish] - Callback fired after request successful or not.
    */
   request: function(args) {
-
-    args = merge(args, defaultArgs())
-    validateArgs(args)
-
-    let xhr = newXhrObject(args)
-
-    // Fires onStart consistantly pre request
-    args.onStart(xhr)
-
-    xhr.send(args.data)
+    request(args)
   },
 
   /**
@@ -97,16 +96,7 @@ export default {
    * @param {object} args - see Ajax.request for params
    */
   xDomainRequest: function(args) {
-
-    args = merge(args, defaultArgs())
-    validateArgs(args)
-
-    let xhr = newXhrObject(args, true)
-
-    // Fires onstart consistantly pre request
-    args.onStart(xhr)
-
-    xhr.send(args.data)
+    request(args, true)
   }
 
 }

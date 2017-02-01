@@ -144,19 +144,26 @@ var validateArgs = function validateArgs(args) {
 };
 
 /**
- * @returns new mostly configured xhr instance. request type specific config is
- * added in request method
+ * make an ajax request
+ *
+ * @param {object} args
+ * @param {boolean} [xdomain=false] Description
  */
-var newXhrObject = function newXhrObject(args) {
+var _request = function _request(args) {
   var xdomain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+  args = (0, _utils.merge)(args, defaultArgs());
+  validateArgs(args);
 
   args.headers['Content-Type'] = CONTENT_TYPES[args.type];
 
   var xhr = _xhr_factory2.default.new(args, xdomain);
 
-  // xhr.open(args.method, args.url, true)
+  // Fires onStart consistantly pre request
+  args.onStart(xhr);
 
-  return xhr;
+  xhr.send(args.data);
 };
 
 exports.default = {
@@ -175,16 +182,7 @@ exports.default = {
    * @param {function} [args.onFinish] - Callback fired after request successful or not.
    */
   request: function request(args) {
-
-    args = (0, _utils.merge)(args, defaultArgs());
-    validateArgs(args);
-
-    var xhr = newXhrObject(args);
-
-    // Fires onStart consistantly pre request
-    args.onStart(xhr);
-
-    xhr.send(args.data);
+    _request(args);
   },
 
   /**
@@ -193,16 +191,7 @@ exports.default = {
    * @param {object} args - see Ajax.request for params
    */
   xDomainRequest: function xDomainRequest(args) {
-
-    args = (0, _utils.merge)(args, defaultArgs());
-    validateArgs(args);
-
-    var xhr = newXhrObject(args, true);
-
-    // Fires onstart consistantly pre request
-    args.onStart(xhr);
-
-    xhr.send(args.data);
+    _request(args, true);
   }
 
 };
