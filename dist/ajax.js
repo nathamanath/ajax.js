@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -96,7 +96,7 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * default params for requests
+ * recognised content types
  */
 /**
  * Ajax.js - cross browser xhr wrapper
@@ -107,20 +107,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @author - NathanG https://github.com/nathamanath/ajax.js
  */
 
-var DEFAULT_ARGS = {
-  method: 'GET',
-  type: 'JSON',
-  data: '',
-  headers: {},
-  onStart: _utils.noop,
-  onSuccess: _utils.noop,
-  onFinish: _utils.noop,
-  onError: _utils.noop
-};
-
-/**
- * recognised content types
- */
 var CONTENT_TYPES = {
   'URLENCODED': 'application/x-www-form-urlencoded',
   'JSON': 'application/json',
@@ -128,19 +114,18 @@ var CONTENT_TYPES = {
 };
 
 /**
- * set headers on xhr instance from object. object keys are header name, values
- * are header values
- *
- * @param {object} xhr - any form of xhr instance provided by XhrFactory
- * @param {object} headers - key value pairs of request headers
+ * @returns {object} default params for requests
  */
-var setHeaders = function setHeaders(xhr, headers) {
-  // No headers for ie9 xdomain
-  if (xhr.constructor !== XDomainRequest) {
-    Object.keys(headers).forEach(function (key) {
-      xhr.setRequestHeader(key, headers[key]);
-    });
-  }
+var defaultArgs = function defaultArgs() {
+  return {
+    method: 'GET',
+    type: 'JSON',
+    headers: {},
+    onStart: _utils.noop,
+    onSuccess: _utils.noop,
+    onFinish: _utils.noop,
+    onError: _utils.noop
+  };
 };
 
 /**
@@ -165,14 +150,11 @@ var validateArgs = function validateArgs(args) {
 var newXhrObject = function newXhrObject(args) {
   var xdomain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  var xhr = _xhr_factory2.default.new(xdomain);
-  var headers = args.headers;
+  args.headers['Content-Type'] = CONTENT_TYPES[args.type];
 
-  headers['Content-Type'] = CONTENT_TYPES[args.type];
+  var xhr = _xhr_factory2.default.new(args, xdomain);
 
-  xhr.open(args.method, args.url, true);
-
-  setHeaders(xhr, headers);
+  // xhr.open(args.method, args.url, true)
 
   return xhr;
 };
@@ -194,23 +176,10 @@ exports.default = {
    */
   request: function request(args) {
 
-    args = (0, _utils.merge)(args, DEFAULT_ARGS);
+    args = (0, _utils.merge)(args, defaultArgs());
     validateArgs(args);
 
     var xhr = newXhrObject(args);
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        // Successful
-        if (xhr.status.toString().match(/2[0-9]{1,2}/)) {
-          args.onSuccess(xhr);
-        } else {
-          args.onError(xhr);
-        }
-
-        args.onFinish(xhr);
-      }
-    };
 
     // Fires onStart consistantly pre request
     args.onStart(xhr);
@@ -225,46 +194,18 @@ exports.default = {
    */
   xDomainRequest: function xDomainRequest(args) {
 
-    args = (0, _utils.merge)(args, DEFAULT_ARGS);
+    args = (0, _utils.merge)(args, defaultArgs());
     validateArgs(args);
 
-    var xhr = _xhr_factory2.default.new(true);
-    var headers = args.headers;
-
-    headers['Content-Type'] = CONTENT_TYPES[args.type];
-    // ie9 fix - onprogress must be set
-
-
-    xhr.open(args.method, args.url, true);
-
-    xhr.timeout = 0;
-
-    setHeaders(xhr, headers);
-
-    xhr.onload = function () {
-      args.onSuccess(xhr);
-      args.onFinish(xhr);
-    };
-
-    xhr.onerror = function () {
-      args.onError(xhr);
-      args.onFinish(xhr);
-    };
-
-    xhr.onprogress = _utils.noop;
-    xhr.ontimeout = _utils.noop;
+    var xhr = newXhrObject(args, true);
 
     // Fires onstart consistantly pre request
     args.onStart(xhr);
 
-    // fix for ie9 xdomain. Thanks Jolyon
-    global.setTimeout(function () {
-      xhr.send(args.data);
-    }, 0);
+    xhr.send(args.data);
   }
 
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 1 */
@@ -340,68 +281,136 @@ var noop = exports.noop = function noop() {};
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _utils = __webpack_require__(2);
+
 /**
- * xhr request object factory
+ * setup callbacks for XMLHttpRequest or ActiveXObject
+ *
+ * @param {XMLHttpRequest|ActiveXObject} xhr - xhr object
+ * @param {object} handlers - See XhrFactory.new
+ */
+var bindStandardEvents = function bindStandardEvents(xhr, handlers) {
+
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+
+      if (xhr.status.toString().match(/2[0-9]{1,2}/)) {
+        handlers.onSuccess(xhr);
+      } else {
+        handlers.onError(xhr);
+      }
+
+      handlers.onFinish(xhr);
+    }
+  };
+};
+
+/**
+ * setup callbacks for XDomainRequest
+ *
+ * @param {XDomainRequest} xhr
+ * @param {object} handlers - See XhrFactory.new
+ */
+var bindIeXdomainEvents = function bindIeXdomainEvents(xhr, handlers) {
+  xhr.onload = function () {
+    handlers.onSuccess(xhr);
+    handlers.onFinish(xhr);
+  };
+
+  xhr.onerror = function () {
+    handlers.onError(xhr);
+    handlers.onFinish(xhr);
+  };
+
+  // ie9 fix - onprogress and ontimeout must be set
+  xhr.onprogress = _utils.noop;
+  xhr.ontimeout = _utils.noop;
+};
+
+/**
+ * set headers on xhr instance from object. object keys are header name, values
+ * are header values
+ *
+ * @param {object} xhr - any form of xhr instance provided by XhrFactory
+ * @param {object} headers - key value pairs of request headers
+ */
+var setHeaders = function setHeaders(xhr, headers) {
+  Object.keys(headers).forEach(function (key) {
+    xhr.setRequestHeader(key, headers[key]);
+  });
+};
+
+/**
+ * openXhr - open xhr request. got to do this before setting callbacks
+ *
+ * @param {object} xhr - xhr instance
+ * @param {string} method - http method
+ * @param {string} url - load this url
+ */
+var openXhr = function openXhr(xhr, method, url) {
+  xhr.open(method, url, true);
+};
+
+/**
+ * XhrFactory - xhr request object to suit your ajax requirements
  */
 exports.default = {
 
   /**
    * new xhr object fit for browser and request type
    *
+   * @param {object} args - see Ajax.request
    * @param {boolean} [xdomain=false] - is request cross domain?
    * @returns {object} xhr instance
    */
-  new: function _new() {
-    var xdomain = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  new: function _new(args) {
+    var xdomain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+    var method = args.method;
+    var url = args.url;
     var xhr = new XMLHttpRequest();
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
+
+      openXhr(xhr, method, url);
+      setHeaders(xhr, args.headers);
+      bindStandardEvents(xhr, args);
+
       return xhr;
     }
 
-    // ie9 xDomain
+    // ie9
     if (xdomain) {
-      return new XDomainRequest();
+
+      // ie9 xDomain
+      var _xhr = XDomainRequest();
+
+      openXhr(_xhr, method, url);
+      bindIeXdomainEvents(_xhr, args);
+
+      return _xhr;
     } else {
+
       // ie9 local
-      return new ActiveXObject('Msxml2.XMLHTTP');
+      var _xhr2 = new ActiveXObject('Msxml2.XMLHTTP');
+
+      openXhr(_xhr2, method, url);
+      setHeaders(_xhr2, args.headers);
+      bindStandardEvents(_xhr2, args);
+
+      return _xhr2;
     }
 
     // ie <= 8
     console.error('Ajax.js - Browser not supported.');
   }
+
 };
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 

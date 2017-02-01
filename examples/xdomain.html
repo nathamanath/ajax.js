@@ -16,18 +16,17 @@
     <script type="text/javascript" src="./ajax.js"></script>
 
     <script type="text/javascript">
-      // TODO: callback not getting called
 
       Ajax.xDomainRequest({
-        url: 'http://echo.nathansplace.co.uk/echo',
+        url: 'http://echo.nathansplace.co.uk/echo?status=200&body=hello',
+        type: 'URLENCODED',
         method: 'POST',
-        data: JSON.stringify({ status: 200, body: 'echo?' }),
         onSuccess: function(xhr) {
-          console.log(xhr);
           var message = xhr.responseText;
           alert(message);
         }
       });
+
     </script>
 
   </body>

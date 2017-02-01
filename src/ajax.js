@@ -11,20 +11,6 @@ import XhrFactory from './xhr_factory'
 import { noop, merge } from './utils'
 
 /**
- * default params for requests
- */
-const DEFAULT_ARGS = {
-  method: 'GET',
-  type: 'JSON',
-  data: '',
-  headers: {},
-  onStart: noop,
-  onSuccess: noop,
-  onFinish: noop,
-  onError: noop
-}
-
-/**
  * recognised content types
  */
 const CONTENT_TYPES = {
@@ -34,18 +20,17 @@ const CONTENT_TYPES = {
 }
 
 /**
- * set headers on xhr instance from object. object keys are header name, values
- * are header values
- *
- * @param {object} xhr - any form of xhr instance provided by XhrFactory
- * @param {object} headers - key value pairs of request headers
+ * @returns {object} default params for requests
  */
-const setHeaders = function(xhr, headers) {
-  // No headers for ie9 xdomain
-  if(xhr.constructor !== XDomainRequest) {
-    Object.keys(headers).forEach(function(key) {
-      xhr.setRequestHeader(key, headers[key])
-    })
+const defaultArgs = function() {
+  return {
+    method: 'GET',
+    type: 'JSON',
+    headers: {},
+    onStart: noop,
+    onSuccess: noop,
+    onFinish: noop,
+    onError: noop
   }
 }
 
@@ -69,14 +54,11 @@ const validateArgs = function(args) {
  * added in request method
  */
 const newXhrObject = function(args, xdomain=false) {
-  let xhr = XhrFactory.new(xdomain)
-  let headers = args.headers
+  args.headers['Content-Type'] = CONTENT_TYPES[args.type]
 
-  headers['Content-Type'] = CONTENT_TYPES[args.type]
+  let xhr = XhrFactory.new(args, xdomain)
 
-  xhr.open(args.method, args.url, true)
-
-  setHeaders(xhr, headers)
+  // xhr.open(args.method, args.url, true)
 
   return xhr
 }
@@ -98,23 +80,10 @@ export default {
    */
   request: function(args) {
 
-    args = merge(args, DEFAULT_ARGS)
+    args = merge(args, defaultArgs())
     validateArgs(args)
 
     let xhr = newXhrObject(args)
-
-    xhr.onreadystatechange = function(){
-      if(xhr.readyState === 4) {
-        // Successful
-        if(xhr.status.toString().match(/2[0-9]{1,2}/)) {
-          args.onSuccess(xhr)
-        } else {
-          args.onError(xhr)
-        }
-
-        args.onFinish(xhr)
-      }
-    }
 
     // Fires onStart consistantly pre request
     args.onStart(xhr)
@@ -129,46 +98,15 @@ export default {
    */
   xDomainRequest: function(args) {
 
-    args = merge(args, DEFAULT_ARGS)
+    args = merge(args, defaultArgs())
     validateArgs(args)
 
-    let xhr = XhrFactory.new(true)
-    let headers = args.headers
-
-    headers['Content-Type'] = CONTENT_TYPES[args.type]
-    // ie9 fix - onprogress must be set
-
-
-    xhr.open(args.method, args.url, true)
-
-    xhr.timeout = 0
-
-    setHeaders(xhr, headers)
-
-
-
-
-    xhr.onload = function() {
-      args.onSuccess(xhr)
-      args.onFinish(xhr)
-    }
-
-    xhr.onerror = function() {
-      args.onError(xhr)
-      args.onFinish(xhr)
-    }
-
-    xhr.onprogress = noop
-    xhr.ontimeout = noop
-
+    let xhr = newXhrObject(args, true)
 
     // Fires onstart consistantly pre request
     args.onStart(xhr)
 
-    // fix for ie9 xdomain. Thanks Jolyon
-    global.setTimeout(function() {
-      xhr.send(args.data)
-    }, 0)
+    xhr.send(args.data)
   }
 
 }

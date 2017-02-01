@@ -19,14 +19,16 @@
       Ajax.request({
         url: './result.json',
         onStart: function() {
-          document.write('Starting request...<br>');
+          console.log('in onStart')
         },
         onSuccess: function(xhr) {
+          console.log('in onSuccess')
+
           var message = JSON.parse(xhr.responseText).message;
-          document.write('Success! Got: "' + message + '"...<br>');
+          console.log('Success! Got: "' + message + '"');
         },
         onFinish: function() {
-          document.write('Fin.<br>');
+          console.log('in onFinish')
         }
       })
     </script>

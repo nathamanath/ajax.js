@@ -19,7 +19,7 @@ describe('Ajax', function() {
     }
   })
 
-  // test commonn behaviour for both request methods
+  // test common behaviour for both request methods
   let requestMethods = ['request', 'xDomainRequest']
 
   requestMethods.forEach(function(requestMethod) {
@@ -66,14 +66,9 @@ describe('Ajax', function() {
       it('sends request data', function() {
         let data = JSON.stringify({ something: 123 })
 
-        Ajax[requestMethod]({ url: '/test', data: data })
+        Ajax[requestMethod]({ url: '/test', method: 'POST', data: data })
         assert.equal(this.requests[0].requestBody, data)
       })
-
-      // it('sets a timeout', function() {
-      //   Ajax[requestMethod]({ url: '/test', timeout: 123 })
-      //   assert.equal(this.requests[0].timeout, 123)
-      // })
 
       it('sets headers', function() {
         Ajax[requestMethod]({ url: '/test', headers: { 'X-Token': 'qwerty' } })

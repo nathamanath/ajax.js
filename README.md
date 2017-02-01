@@ -56,7 +56,6 @@ as `Ajax.request`.
     url: 'http://echo.nathansplace.co.uk/echo',
     type: 'JOSN', // this is default type
     method: 'POST',
-    // TODO: is stringify needed
     data: JSON.stringify({ status: 418, body: { message: "I am a teapot!" } }),
     onError: function(xhr) {
       var message = JSON.parse(xhr.responseText).message;
