@@ -1,9 +1,7 @@
 /**
  * Ajax.js - cross browser xhr wrapper
  *
- * Supports ie >= 9 and modern browsers
- *
- * @license - MIT
+ * @license - MIT - https://github.com/nathamanath/ajax.js/blob/master/LICENSE
  * @author - NathanG https://github.com/nathamanath/ajax.js
  */
 
@@ -20,6 +18,7 @@ const CONTENT_TYPES = {
 }
 
 /**
+ * @private
  * @returns {object} default params for requests
  */
 const defaultArgs = function() {
@@ -30,13 +29,15 @@ const defaultArgs = function() {
     onStart: noop,
     onSuccess: noop,
     onFinish: noop,
-    onError: noop
+    onError: noop,
+    xdomain: false
   }
 }
 
 /**
  * validate args object
  *
+ * @private
  * @param {object} args - args object from request or xDomianRequest
  */
 const validateArgs = function(args) {
@@ -47,28 +48,6 @@ const validateArgs = function(args) {
   if(Object.keys(CONTENT_TYPES).indexOf(args.type) === -1){
     throw new Error('Ajax: args.type not recognised')
   }
-}
-
-
-/**
- * make an ajax request
- *
- * @param {object} args
- * @param {boolean} [xdomain=false] Description
- */
-const request = function(args, xdomain=false) {
-
-  args = merge(args, defaultArgs())
-  validateArgs(args)
-
-  args.headers['Content-Type'] = CONTENT_TYPES[args.type]
-
-  let xhr = XhrFactory.new(args, xdomain)
-
-  // Fires onStart consistantly pre request
-  args.onStart(xhr)
-
-  xhr.send(args.data)
 }
 
 export default {
@@ -85,18 +64,20 @@ export default {
    * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
    * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
    * @param {function} [args.onFinish] - Callback fired after request successful or not.
+   * @param {boolean} [args.xdomain=false] - Is this request cross domain?
    */
   request: function(args) {
-    request(args)
-  },
+    args = merge(args, defaultArgs())
+    validateArgs(args)
 
-  /**
-   * Makes a cross domain ajax request
-   * ** Note - no headers for XDomainRequest ie < 10  :( **
-   * @param {object} args - see Ajax.request for params
-   */
-  xDomainRequest: function(args) {
-    request(args, true)
+    args.headers['Content-Type'] = CONTENT_TYPES[args.type]
+
+    let xhr = XhrFactory.new(args, args.xdomain)
+
+    // Fires onStart consistantly pre request
+    args.onStart(xhr)
+
+    xhr.send(args.data)
   }
 
 }

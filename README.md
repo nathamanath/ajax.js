@@ -18,7 +18,8 @@ The only required option is `args.url`.
 ```javascript
 
   Ajax.request({
-    url: '/path', // required param
+    xdomain: true,
+    url: 'http://echo.nathansplace.co.uk/echo?body=echo', // required param
     type: 'JOSN', // this is default type
     method: 'POST', // defaults to GET
     data: JSON.stringify({ example: true }),
@@ -27,33 +28,13 @@ The only required option is `args.url`.
       console.log('onStart called!');
     },
     onSuccess: function(xhr) {
-      console.log('onSuccess called!');
+      console.log(xhr.responseText);
     },
     onError: function(xhr) {
       console.log('onError called!');
     },
     onFinish: function(xhr) {
       console.log('onFinish called!');
-    }
-  });
-```
-
-### cross domain requests
-
-Use `Ajax.xDomainRequest` to make cross domain requests. It takes the same arguments
-as `Ajax.request`.
-
-```javascript
-
-  // Cross domain example using less options
-  Ajax.xDomainRequest({
-    url: 'http://echo.nathansplace.co.uk/echo',
-    type: 'JOSN', // this is default type
-    method: 'POST',
-    data: JSON.stringify({ status: 418, body: { message: "I am a teapot!" } }),
-    onError: function(xhr) {
-      var message = JSON.parse(xhr.responseText).message;
-      alert(message)
     }
   });
 ```

@@ -19,44 +19,40 @@ describe('Ajax', function() {
     }
   })
 
-  // test common behaviour for both request methods
-  let requestMethods = ['request', 'xDomainRequest']
 
-  requestMethods.forEach(function(requestMethod) {
-
-    describe(`#${requestMethod}/1`, function() {
+    describe(`#request/1`, function() {
       it('requires args.url', function() {
         assert.throws(
           () => {
-            Ajax[requestMethod]({})
+            Ajax.request({})
           },
           /args.url/
         )
       })
 
       it('makes a resquest', function() {
-        Ajax[requestMethod]({ url: '/test' })
+        Ajax.request({ url: '/test' })
         assert(this.requests[0])
       })
 
       it('sets correct http method', function() {
-        Ajax[requestMethod]({ url: '/test', method: 'POST' })
+        Ajax.request({ url: '/test', method: 'POST' })
         assert.equal(this.requests[0].method, 'POST')
       })
 
       it('requires valid args.type', function() {
         assert.throws(
           () => {
-            Ajax[requestMethod]({ url: '/test', type: 'WRONG' })
+            Ajax.request({ url: '/test', type: 'WRONG' })
           },
           /args.type/
         )
       })
 
       it('sets content type header based on args.type', function() {
-        Ajax[requestMethod]({ url: '/test', type: 'XML' })
-        Ajax[requestMethod]({ url: '/test', type: 'JSON' })
-        Ajax[requestMethod]({ url: '/test', type: 'URLENCODED' })
+        Ajax.request({ url: '/test', type: 'XML' })
+        Ajax.request({ url: '/test', type: 'JSON' })
+        Ajax.request({ url: '/test', type: 'URLENCODED' })
 
         assert.equal(this.requests[0].requestHeaders['Content-Type'], 'text/xml')
         assert.equal(this.requests[1].requestHeaders['Content-Type'], 'application/json')
@@ -66,12 +62,12 @@ describe('Ajax', function() {
       it('sends request data', function() {
         let data = JSON.stringify({ something: 123 })
 
-        Ajax[requestMethod]({ url: '/test', method: 'POST', data: data })
+        Ajax.request({ url: '/test', method: 'POST', data: data })
         assert.equal(this.requests[0].requestBody, data)
       })
 
       it('sets headers', function() {
-        Ajax[requestMethod]({ url: '/test', headers: { 'X-Token': 'qwerty' } })
+        Ajax.request({ url: '/test', headers: { 'X-Token': 'qwerty' } })
         assert.equal(this.requests[0].requestHeaders['X-Token'], 'qwerty')
       })
 
@@ -83,7 +79,7 @@ describe('Ajax', function() {
           let onError = spy()
           let onFinish = spy()
 
-          Ajax[requestMethod]({
+          Ajax.request({
             url: '/test',
             onSuccess: onSuccess,
             onStart: onStart,
@@ -108,7 +104,7 @@ describe('Ajax', function() {
           let onError = spy()
           let onFinish = spy()
 
-          Ajax[requestMethod]({
+          Ajax.request({
             url: '/test',
             onSuccess: onSuccess,
             onStart: onStart,
@@ -129,5 +125,5 @@ describe('Ajax', function() {
 
       })
     })
-  })
+
 })
