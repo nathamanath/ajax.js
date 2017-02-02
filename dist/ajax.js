@@ -73,159 +73,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _xhr_factory = __webpack_require__(3);
-
-var _xhr_factory2 = _interopRequireDefault(_xhr_factory);
-
-var _utils = __webpack_require__(2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * recognised content types
- */
-/**
- * Ajax.js - cross browser xhr wrapper
- *
- * Supports ie >= 9 and modern browsers
- *
- * @license - MIT
- * @author - NathanG https://github.com/nathamanath/ajax.js
- */
-
-var CONTENT_TYPES = {
-  'URLENCODED': 'application/x-www-form-urlencoded',
-  'JSON': 'application/json',
-  'XML': 'text/xml'
-};
-
-/**
- * @returns {object} default params for requests
- */
-var defaultArgs = function defaultArgs() {
-  return {
-    method: 'GET',
-    type: 'JSON',
-    headers: {},
-    onStart: _utils.noop,
-    onSuccess: _utils.noop,
-    onFinish: _utils.noop,
-    onError: _utils.noop
-  };
-};
-
-/**
- * validate args object
- *
- * @param {object} args - args object from request or xDomianRequest
- */
-var validateArgs = function validateArgs(args) {
-  // URL is required
-  if (!args.url) throw new Error('Ajax: args.url required');
-
-  // content type must be recognised
-  if (Object.keys(CONTENT_TYPES).indexOf(args.type) === -1) {
-    throw new Error('Ajax: args.type not recognised');
-  }
-};
-
-/**
- * make an ajax request
- *
- * @param {object} args
- * @param {boolean} [xdomain=false] Description
- */
-var _request = function _request(args) {
-  var xdomain = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-
-  args = (0, _utils.merge)(args, defaultArgs());
-  validateArgs(args);
-
-  args.headers['Content-Type'] = CONTENT_TYPES[args.type];
-
-  var xhr = _xhr_factory2.default.new(args, xdomain);
-
-  // Fires onStart consistantly pre request
-  args.onStart(xhr);
-
-  xhr.send(args.data);
-};
-
-exports.default = {
-  /**
-   * Makes a local ajax request.
-   *
-   * @static
-   * @param {string} args.url - Request url
-   * @param {string} [args.method=GET] - Request method. Should be upper case string
-   * @param {string} [args.type=JSON] - Request type. Must be `URLENCODED`, `XML`, or `JSON`.
-   * @param {object} [args.data] - Request data. passed directly to xhr.send
-   * @param {object} [args.headers] - Request headers as key value pairs.
-   * @param {function} [args.onStart] - Callback fired at start of request.
-   * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
-   * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
-   * @param {function} [args.onFinish] - Callback fired after request successful or not.
-   */
-  request: function request(args) {
-    _request(args);
-  },
-
-  /**
-   * Makes a cross domain ajax request
-   * ** Note - no headers for XDomainRequest ie < 10  :( **
-   * @param {object} args - see Ajax.request for params
-   */
-  xDomainRequest: function xDomainRequest(args) {
-    _request(args, true);
-  }
-
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -261,6 +113,134 @@ var merge = exports.merge = function merge(a, b) {
 var noop = exports.noop = function noop() {};
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _xhr_factory = __webpack_require__(3);
+
+var _xhr_factory2 = _interopRequireDefault(_xhr_factory);
+
+var _utils = __webpack_require__(0);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * recognised content types
+ */
+/**
+ * Ajax.js - cross browser xhr wrapper
+ *
+ * @license - MIT - https://github.com/nathamanath/ajax.js/blob/master/LICENSE
+ * @author - NathanG https://github.com/nathamanath/ajax.js
+ */
+
+var CONTENT_TYPES = {
+  'URLENCODED': 'application/x-www-form-urlencoded',
+  'JSON': 'application/json',
+  'XML': 'text/xml'
+};
+
+/**
+ * @private
+ * @returns {object} default params for requests
+ */
+var defaultArgs = function defaultArgs() {
+  return {
+    method: 'GET',
+    type: 'JSON',
+    headers: {},
+    onStart: _utils.noop,
+    onSuccess: _utils.noop,
+    onFinish: _utils.noop,
+    onError: _utils.noop,
+    xdomain: false
+  };
+};
+
+/**
+ * validate args object
+ *
+ * @private
+ * @param {object} args - args object from request or xDomianRequest
+ */
+var validateArgs = function validateArgs(args) {
+  // URL is required
+  if (!args.url) throw new Error('Ajax: args.url required');
+
+  // content type must be recognised
+  if (Object.keys(CONTENT_TYPES).indexOf(args.type) === -1) {
+    throw new Error('Ajax: args.type not recognised');
+  }
+};
+
+exports.default = {
+  /**
+   * Makes a local ajax request.
+   *
+   * @static
+   * @param {string} args.url - Request url
+   * @param {string} [args.method=GET] - Request method. Should be upper case string
+   * @param {string} [args.type=JSON] - Request type. Must be `URLENCODED`, `XML`, or `JSON`.
+   * @param {object} [args.data] - Request data. passed directly to xhr.send
+   * @param {object} [args.headers] - Request headers as key value pairs.
+   * @param {function} [args.onStart] - Callback fired at start of request.
+   * @param {function} [args.onSuccess] - Callback fired on successful completion of request (2xx response).
+   * @param {function} [args.onError] - Callback fired if request response is not in 200 range.
+   * @param {function} [args.onFinish] - Callback fired after request successful or not.
+   * @param {boolean} [args.xdomain=false] - Is this request cross domain?
+   */
+  request: function request(args) {
+    args = (0, _utils.merge)(args, defaultArgs());
+    validateArgs(args);
+
+    args.headers['Content-Type'] = CONTENT_TYPES[args.type];
+
+    var xhr = _xhr_factory2.default.new(args, args.xdomain);
+
+    // Fires onStart consistantly pre request
+    args.onStart(xhr);
+
+    xhr.send(args.data);
+  }
+
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -271,7 +251,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(0);
 
 /**
  * setup callbacks for XMLHttpRequest or ActiveXObject
@@ -399,8 +379,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -412,7 +391,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                                                                                                                                                                                                                                                                                * present. Otherwise makes Ajax a global object.
                                                                                                                                                                                                                                                                                */
 
-var _ajax = __webpack_require__(0);
+var _ajax = __webpack_require__(1);
 
 var _ajax2 = _interopRequireDefault(_ajax);
 
@@ -435,7 +414,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 })(undefined, function () {
   return _ajax2.default;
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ })
 /******/ ]);
