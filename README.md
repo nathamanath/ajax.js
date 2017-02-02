@@ -13,7 +13,7 @@ installing via npm with `npm install git+https://github.com/nathamanath/ajax.js.
 
 Basic usage is shown below, further usage examples can be found in `./examples`.
 
-### local requests
+### Making requests
 
 The example below shows an example with all options. See jsdocs for defaults.
 The only required option is `args.url`.
