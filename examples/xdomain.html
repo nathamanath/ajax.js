@@ -17,13 +17,25 @@
 
     <script type="text/javascript">
 
-      Ajax.xDomainRequest({
+      Ajax.request({
+        xdomain: true,
         url: 'http://echo.nathansplace.co.uk/echo?status=200&body=hello',
         type: 'URLENCODED',
         method: 'POST',
+        onStart: function() {
+
+        },
         onSuccess: function(xhr) {
+          console.log('in onSuccess');
+
           var message = xhr.responseText;
-          alert(message);
+          console.log('Success! Got: "' + message + '"');
+        },
+        onStart: function() {
+          console.log('in onStart')
+        },
+        onFinish: function() {
+          console.log('in onFinish')
         }
       });
 
