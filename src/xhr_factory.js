@@ -11,7 +11,7 @@ const bindStandardEvents = function(xhr, handlers) {
   xhr.onreadystatechange = function(){
     if(xhr.readyState === 4) {
 
-      if(xhr.status.toString().match(/2[0-9]{1,2}/)) {
+      if(xhr.status.toString().match(/^2[0-9]{2}$/)) {
         handlers.onSuccess(xhr)
       } else {
         handlers.onError(xhr)
@@ -20,7 +20,6 @@ const bindStandardEvents = function(xhr, handlers) {
       handlers.onFinish(xhr)
     }
   }
-
 }
 
 /**
