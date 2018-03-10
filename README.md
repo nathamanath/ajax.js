@@ -23,7 +23,7 @@ The only required option is `args.url`.
   Ajax.request({
     xdomain: true, // defaults to false
     url: 'http://echo.nathansplace.co.uk/echo?body=echo', // required param
-    type: 'JOSN', // this is default type
+    type: 'JSON', // this is default type
     method: 'POST', // defaults to GET
     data: JSON.stringify({ example: true }),
     onStart: function(xhr) {
