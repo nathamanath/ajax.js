@@ -1,4 +1,4 @@
-import { noop } from './utils'
+import {noop} from './utils'
 
 /**
  * setup callbacks for XMLHttpRequest or ActiveXObject
@@ -88,6 +88,7 @@ export default {
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
+      xhr.responseType = args.responseType
 
       openXhr(xhr, method, url)
       setHeaders(xhr, args.headers)
@@ -98,7 +99,6 @@ export default {
 
     // ie9
     if(xdomain) {
-
       // ie9 xDomain
       let xhr = XDomainRequest()
 
@@ -106,9 +106,7 @@ export default {
       bindIeXdomainEvents(xhr, args)
 
       return xhr
-
     } else {
-
       // ie9 local
       let xhr = new ActiveXObject('Msxml2.XMLHTTP')
 
@@ -117,12 +115,9 @@ export default {
       bindStandardEvents(xhr, args)
 
       return xhr
-
     }
 
     // ie <= 8
     console.error('Ajax.js - Browser not supported.')
-
   }
-
 }

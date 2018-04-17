@@ -21,11 +21,12 @@ The only required option is `args.url`.
 ```javascript
 
   Ajax.request({
-    xdomain: true, // defaults to false
+    xdomain: false, // default... old ie xdomain
     url: 'http://echo.nathansplace.co.uk/echo?body=echo', // required param
     type: 'JSON', // this is default type
     method: 'POST', // defaults to GET
     data: JSON.stringify({ example: true }),
+    responseType: '',
     onStart: function(xhr) {
       // xhr is your request object. you can modify it here pre request
       console.log('onStart called!');

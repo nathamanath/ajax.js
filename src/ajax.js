@@ -30,7 +30,8 @@ const defaultArgs = function() {
     onSuccess: noop,
     onFinish: noop,
     onError: noop,
-    xdomain: false
+    xdomain: false,
+    responseType: ''
   }
 }
 

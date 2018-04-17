@@ -23,7 +23,6 @@
         },
         onSuccess: function(xhr) {
           console.log('in onSuccess')
-
           var message = JSON.parse(xhr.responseText).message;
           console.log('Success! Got: "' + message + '"');
         },
