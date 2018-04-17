@@ -145,13 +145,12 @@ var CONTENT_TYPES = {
   'URLENCODED': 'application/x-www-form-urlencoded',
   'JSON': 'application/json',
   'XML': 'text/xml'
-};
 
-/**
- * @private
- * @returns {object} default params for requests
- */
-var defaultArgs = function defaultArgs() {
+  /**
+   * @private
+   * @returns {object} default params for requests
+   */
+};var defaultArgs = function defaultArgs() {
   return {
     method: 'GET',
     type: 'JSON',
@@ -160,7 +159,8 @@ var defaultArgs = function defaultArgs() {
     onSuccess: _utils.noop,
     onFinish: _utils.noop,
     onError: _utils.noop,
-    xdomain: false
+    xdomain: false,
+    responseType: ''
   };
 };
 
@@ -381,6 +381,7 @@ exports.default = {
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
+      xhr.responseType = args.responseType;
 
       openXhr(xhr, method, url);
       setHeaders(xhr, args.headers);
@@ -391,7 +392,6 @@ exports.default = {
 
     // ie9
     if (xdomain) {
-
       // ie9 xDomain
       var _xhr = XDomainRequest();
 
@@ -400,7 +400,6 @@ exports.default = {
 
       return _xhr;
     } else {
-
       // ie9 local
       var _xhr2 = new ActiveXObject('Msxml2.XMLHTTP');
 
@@ -414,7 +413,6 @@ exports.default = {
     // ie <= 8
     console.error('Ajax.js - Browser not supported.');
   }
-
 };
 
 /***/ })
