@@ -381,9 +381,9 @@ exports.default = {
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
-      xhr.responseType = args.responseType;
-
       openXhr(xhr, method, url);
+
+      xhr.responseType = args.responseType;
       setHeaders(xhr, args.headers);
       bindStandardEvents(xhr, args);
 
