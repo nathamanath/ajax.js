@@ -30,7 +30,8 @@ const defaultArgs = function() {
     onSuccess: noop,
     onFinish: noop,
     onError: noop,
-    xdomain: false
+    xdomain: false,
+    responseType: ''
   }
 }
 
@@ -52,7 +53,7 @@ const validateArgs = function(args) {
 
 export default {
   /**
-   * Makes a local ajax request.
+   * Makes an ajax request.
    *
    * @static
    * @param {string} args.url - Request url
@@ -67,6 +68,7 @@ export default {
    * @param {boolean} [args.xdomain=false] - Is this request cross domain?
    */
   request: function(args) {
+
     args = merge(args, defaultArgs())
     validateArgs(args)
 

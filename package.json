@@ -1,12 +1,12 @@
 {
   "name": "ajax",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "main": "./dist/ajax.js",
   "scripts": {
-    "build": "WEBPACK_ENV=development $(npm bin)/webpack --config ./webpack.config.js; WEBPACK_ENV=production $(npm bin)/webpack --config ./webpack.config.js",
+    "build": "WEBPACK_ENV=development $(npm bin)/webpack; WEBPACK_ENV=production $(npm bin)/webpack",
     "test": "$(npm bin)/mocha --compilers js:babel-core/register --recursive --reporter nyan ./test",
-    "dev": "WEBPACK_ENV=development $(npm bin)/webpack --config ./webpack.config.js  --progress --watch"
+    "dev": "WEBPACK_ENV=development $(npm bin)/webpack  --progress --watch"
   },
   "author": "",
   "license": "MIT",

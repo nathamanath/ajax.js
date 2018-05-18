@@ -1,4 +1,4 @@
-import { noop } from './utils'
+import {noop} from './utils'
 
 /**
  * setup callbacks for XMLHttpRequest or ActiveXObject
@@ -11,7 +11,7 @@ const bindStandardEvents = function(xhr, handlers) {
   xhr.onreadystatechange = function(){
     if(xhr.readyState === 4) {
 
-      if(xhr.status.toString().match(/2[0-9]{1,2}/)) {
+      if(xhr.status.toString().match(/^2[0-9]{2}$/)) {
         handlers.onSuccess(xhr)
       } else {
         handlers.onError(xhr)
@@ -20,7 +20,6 @@ const bindStandardEvents = function(xhr, handlers) {
       handlers.onFinish(xhr)
     }
   }
-
 }
 
 /**
@@ -89,8 +88,9 @@ export default {
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
-
       openXhr(xhr, method, url)
+
+      xhr.responseType = args.responseType
       setHeaders(xhr, args.headers)
       bindStandardEvents(xhr, args)
 
@@ -99,7 +99,6 @@ export default {
 
     // ie9
     if(xdomain) {
-
       // ie9 xDomain
       let xhr = XDomainRequest()
 
@@ -107,9 +106,7 @@ export default {
       bindIeXdomainEvents(xhr, args)
 
       return xhr
-
     } else {
-
       // ie9 local
       let xhr = new ActiveXObject('Msxml2.XMLHTTP')
 
@@ -118,12 +115,9 @@ export default {
       bindStandardEvents(xhr, args)
 
       return xhr
-
     }
 
     // ie <= 8
     console.error('Ajax.js - Browser not supported.')
-
   }
-
 }

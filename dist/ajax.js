@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,15 +65,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -123,7 +123,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _xhr_factory = __webpack_require__(3);
+var _xhr_factory = __webpack_require__(4);
 
 var _xhr_factory2 = _interopRequireDefault(_xhr_factory);
 
@@ -145,13 +145,12 @@ var CONTENT_TYPES = {
   'URLENCODED': 'application/x-www-form-urlencoded',
   'JSON': 'application/json',
   'XML': 'text/xml'
-};
 
-/**
- * @private
- * @returns {object} default params for requests
- */
-var defaultArgs = function defaultArgs() {
+  /**
+   * @private
+   * @returns {object} default params for requests
+   */
+};var defaultArgs = function defaultArgs() {
   return {
     method: 'GET',
     type: 'JSON',
@@ -160,7 +159,8 @@ var defaultArgs = function defaultArgs() {
     onSuccess: _utils.noop,
     onFinish: _utils.noop,
     onError: _utils.noop,
-    xdomain: false
+    xdomain: false,
+    responseType: ''
   };
 };
 
@@ -182,7 +182,7 @@ var validateArgs = function validateArgs(args) {
 
 exports.default = {
   /**
-   * Makes a local ajax request.
+   * Makes an ajax request.
    *
    * @static
    * @param {string} args.url - Request url
@@ -197,6 +197,7 @@ exports.default = {
    * @param {boolean} [args.xdomain=false] - Is this request cross domain?
    */
   request: function request(args) {
+
     args = (0, _utils.merge)(args, defaultArgs());
     validateArgs(args);
 
@@ -245,6 +246,44 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
+                                                                                                                                                                                                                                                                               * Used when compiling es5 version with webpack
+                                                                                                                                                                                                                                                                               * Provides module definition for ES6(ES2015) module system, commonjs or amd if
+                                                                                                                                                                                                                                                                               * present. Otherwise makes Ajax a global object.
+                                                                                                                                                                                                                                                                               */
+
+var _ajax = __webpack_require__(1);
+
+var _ajax2 = _interopRequireDefault(_ajax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(function webpackUniversalModuleDefinition(root, factory) {
+
+  if (( false ? 'undefined' : _typeof(exports)) === 'object' && ( false ? 'undefined' : _typeof(module)) === 'object') {
+    module.exports = factory();
+  } else if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
+    exports["Ajax"] = factory();
+  } else {
+    root["Ajax"] = factory();
+  }
+})(undefined, function () {
+  return _ajax2.default;
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -264,7 +303,7 @@ var bindStandardEvents = function bindStandardEvents(xhr, handlers) {
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
 
-      if (xhr.status.toString().match(/2[0-9]{1,2}/)) {
+      if (xhr.status.toString().match(/^2[0-9]{2}$/)) {
         handlers.onSuccess(xhr);
       } else {
         handlers.onError(xhr);
@@ -342,8 +381,9 @@ exports.default = {
 
     // ie >= 10 and browsers
     if ('withCredentials' in xhr) {
-
       openXhr(xhr, method, url);
+
+      xhr.responseType = args.responseType;
       setHeaders(xhr, args.headers);
       bindStandardEvents(xhr, args);
 
@@ -352,7 +392,6 @@ exports.default = {
 
     // ie9
     if (xdomain) {
-
       // ie9 xDomain
       var _xhr = XDomainRequest();
 
@@ -361,7 +400,6 @@ exports.default = {
 
       return _xhr;
     } else {
-
       // ie9 local
       var _xhr2 = new ActiveXObject('Msxml2.XMLHTTP');
 
@@ -375,47 +413,9 @@ exports.default = {
     // ie <= 8
     console.error('Ajax.js - Browser not supported.');
   }
-
 };
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; /**
-                                                                                                                                                                                                                                                                               * Used when compiling es5 version with webpack
-                                                                                                                                                                                                                                                                               * Provides module definition for ES6(ES2015) module system, commonjs or amd if
-                                                                                                                                                                                                                                                                               * present. Otherwise makes Ajax a global object.
-                                                                                                                                                                                                                                                                               */
-
-var _ajax = __webpack_require__(1);
-
-var _ajax2 = _interopRequireDefault(_ajax);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(function webpackUniversalModuleDefinition(root, factory) {
-
-  if (( false ? 'undefined' : _typeof(exports)) === 'object' && ( false ? 'undefined' : _typeof(module)) === 'object') {
-    module.exports = factory();
-  } else if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-    exports["Ajax"] = factory();
-  } else {
-    root["Ajax"] = factory();
-  }
-})(undefined, function () {
-  return _ajax2.default;
-});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ })
 /******/ ]);
 });
+//# sourceMappingURL=ajax.js.map
